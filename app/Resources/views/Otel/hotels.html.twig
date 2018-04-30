@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Oteller{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+
+        <h2>Oteller</h2>
+
+
+        <!-- form -->
+
+        <div class="row">
+            <div class="col-sm-6 wowload fadeInUp">
+                <div class="rooms"><img src="images/photos/8.jpg" class="img-responsive">
+                    <div class="info">
+                        <!-- Otellerin bilgileri gelecek -->
+                        <h3>Luxirious Suites</h3>
+                        <p> Missed lovers way one vanity wishes nay but. Use shy seemed within twenty wished old few regret passed. Absolute one hastened mrs any sensible</p>
+                        <a href="{{ path('hotel-details') }}" class="btn btn-default">Ayrıntıya Git</a>
+                        <!-- Otellerin bilgileri gelecek -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

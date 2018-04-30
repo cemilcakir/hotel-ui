@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Anasayfa{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <!-- form -->
+        <div class="contact">
+
+            <div class="row">
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <div class="spacer">
+                            <h4>Giriş Yapın</h4>
+                            <form role="form">
+                                <div class="form-group">
+                                    <input type="email" class="form-control" id="email" placeholder="Email adresinizi giriniz.">
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" class="form-control" id="password" placeholder="Şifrenizi giriniz.">
+                                </div>
+                                <button type="submit" class="btn btn-default">Giriş</button>
+                                <br><br><br>
+                                <p>Üye değil misiniz? <a href="{{ path('signup') }}">Şimdi üye olun.</a></p>
+                            </form>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+        <!-- form -->
+
+{% endblock %}
