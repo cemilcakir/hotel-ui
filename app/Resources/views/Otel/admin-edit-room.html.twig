@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="container">
+        <!-- form -->
+        <div class="contact">
+
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <div class="spacer">
+                        <h4>Otel Bilgileri</h4>
+                        <form role="form">
+                            <div class="form-group">
+                                <label>Otel Adı</label>
+                                <input type="text" class="form-control" id="name" value="" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Oda Türü</label>
+                                <input type="text" class="form-control" id="type" value="" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Oda Fiyatı</label>
+                                <input type="number" class="form-control" id="price" value="" required>
+                            </div>
+                            <div class="form-group">
+                                <label >İçerik</label>
+                                <textarea style="resize: none;height: 150px;width: 750px" id="detail" value=""></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-default">Değişiklikleri Kaydet</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- form -->
+
+
+{% endblock %}

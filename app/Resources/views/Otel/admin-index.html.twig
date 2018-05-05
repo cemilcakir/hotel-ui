@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="container">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Otel Adı</th>
+                <th scope="col">Site Linki</th>
+                <th scope="col">Yıldız</th>
+                <th scope="col">Telefon</th>
+                <th scope="col">Mail</th>
+                <th scope="col">Ülke</th>
+                <th scope="col">İl</th>
+                <th scope="col">İlçe</th>
+                <th scope="col">Adres</th>
+                <th scope="col">Detay</th>
+                <th scope="col">İşlemler</th>
+                <th scope="col"><button class="btn-success">Yeni Otel Ekleyin</button></th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>@mdo</td>
+                    <td>@mdo</td>
+                    <td>@mdo</td>
+                    <td>@mdo</td>
+                    <td>@mdo</td>
+                    <td>@mdo</td>
+                    <td>@mdo</td>
+                    <td>@mdo</td>
+                    <td>
+                        <a href="{{ path('edit-hotel') }}"><button class="button btn-primary">Düzenle</button></a>
+                        <a href="{{ path('room-index') }}"><button class="button btn-primary">Odaları Gör</button></a>
+                        <button class="button btn-danger">Sil</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}
