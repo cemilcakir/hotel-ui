@@ -34,4 +34,18 @@ class AdminController extends Controller
     public function editRoomAction(){
         return $this->render(':Otel:admin-edit-room.html.twig');
     }
+
+    /**
+     * @Route("/edit-hotel-pics",name="edit-hotel-pics")
+     */
+    public function editHotelPicsAction(){
+        return $this->render(':Otel:admin-hotel-pic.html.twig');
+    }
+
+    /**
+     * @Route("/edit-room-pics",name="edit-room-pics")
+     */
+    public function editRoomPicsAction(){
+        return $this->render(':Otel:admin-room-pic.html.twig');
+    }
 }
