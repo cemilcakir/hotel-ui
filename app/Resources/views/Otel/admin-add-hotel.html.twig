@@ -1,0 +1,129 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="container">
+        <!-- form -->
+        <a href="{{ path('admin') }}">Admin Index</a><label>>>></label><a href="{{ path('add-hotel-index') }}">Otel Ekle</a>
+        <div class="contact">
+
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <div class="spacer">
+                        <h4>Otel Bilgileri</h4>
+                        <form id="hotelAddForm" role="form">
+                            <div class="form-group">
+                                <label>İl</label>
+                                <select  id="province" name="province" class="form-control">
+                                    <option>Seçiniz</option>
+                                    {% for il in iller %}
+                                    <option value="{{ il.il }}">{{ il.il }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>İlçe</label>
+                                <select  id="county" name="county" class="form-control">
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Otel Adı</label>
+                                <input type="text" class="form-control" id="name" name="name" value="" >
+                            </div>
+                            <div class="form-group">
+                                <label>Otel Link</label>
+                                <input type="text" class="form-control" id="link" name="link" value="" >
+                            </div>
+                            <div class="form-group">
+                                <label>Otel Email Adresi</label>
+                                <input type="email" class="form-control" id="mail" name="mail" value="" >
+                            </div>
+                            <div class="form-group">
+                                <label>Otel Telefon Numarası</label>
+                                <input type="text" class="form-control" id="phone" name="phone" value="" >
+                            </div>
+                            <div class="form-group">
+                                <label>Yıldız</label>
+                                <input type="number" min="1" max="5" class="form-control" id="star" name="star" value="" >
+                            </div>
+                            <div class="form-group">
+                                <label>Otel Açık Adresi</label>
+                                <input type="text" class="form-control" id="address" name="address" value="" >
+                            </div>
+                            <div class="form-group">
+                                <label >Detay</label>
+                                <textarea style="resize: none;height: 150px;width: 750px" id="detail" name="detail" value=""></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-default">Değişiklikleri Kaydet</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- form -->
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script language = "javascript">
+        $(document).ready(function() {
+            $("#province").change(function () {
+                $.ajax({
+                    url: '/admin/ilce',
+                    type: 'POST',
+                    dataType: 'json',
+                    async: true,
+                    data:{
+                        il : document.getElementById("province").value
+                    },
+                    success: function (data, status) {
+                        $("#county option").each(function() {
+                            $(this).remove();
+                        });
+                        $.each(data.ilceler, function (i, item) {
+                            $('#county').append($('<option>', {
+                                value: item.ilce,
+                                text : item.ilce
+                            }));
+                        });
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log('Ajax request failed.');
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script language="JavaScript">
+        $( "#hotelAddForm").submit(function( event ) {
+             $.ajax({
+                 url: '/addhotel',
+                 method: 'post',
+                 dataType: 'json',
+                 async: true,
+                 data:  {
+                     province: document.getElementById('province').value,
+                     county: document.getElementById('county').value,
+                     name: document.getElementById('name').value,
+                     star: document.getElementById('star').value,
+                     link: document.getElementById('link').value,
+                     mail: document.getElementById('mail').value,
+                     address: document.getElementById('address').value,
+                     detail: document.getElementById('detail').value,
+                     phone: document.getElementById('phone').value
+                 },
+                 success: function (data, status) {
+                     document.getElementById("hotelAddForm").reset();
+                 },
+                 error: function (xhr, textStatus, errorThrown) {
+                     console.log('Ajax request failed.');
+                 }
+             });
+            event.preventDefault();
+        })
+    </script>
+
+{% endblock %}

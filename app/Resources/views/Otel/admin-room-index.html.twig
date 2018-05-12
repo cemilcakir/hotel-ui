@@ -3,33 +3,106 @@
 {% block body %}
 
     <div class="container">
-        <table class="table">
+        <a href="{{ path('admin') }}">Admin Index</a><label>>>></label><a id="odalar" href="#">Odalar</a>
+        <table id="roomTable" class="table">
             <thead>
             <tr>
+                <th style="display: none;" scope="col">id</th>
                 <th scope="col">#</th>
                 <th scope="col">Oda Türü</th>
                 <th scope="col">Oda Fiyatı</th>
                 <th scope="col">Oda Katı</th>
                 <th scope="col">Detay</th>
                 <th scope="col">İşlemler</th>
-                <th scope="col"><button class="btn-success">Yeni Oda Ekleyin</button></th>
+                <th scope="col">
+                        <button onclick="addRoom()" class="btn-success">Yeni Oda Ekleyin</button>
+                </th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-                <td>
-                    <a href="{{ path('edit-room') }}"><button class="button btn-primary">Düzenle</button></a>
-                    <a href="{{ path('edit-room-pics') }}"><button class="button btn-primary small">Resimleri Düzenle</button></a>
-                    <button class="button btn-danger">Sil</button>
-                </td>
-            </tr>
             </tbody>
         </table>
     </div>
 
+{% endblock %}
+
+{% block javascripts %}
+<script language="JavaScript">
+    var qsParm = new Array();
+    $(document).ready(function() {
+        var query = window.location.search.substring(1);
+        var parms = query.split('&');
+        for (var i = 0; i < parms.length; i++) {
+            var pos = parms[i].indexOf('=');
+            if (pos > 0) {
+                var key = parms[i].substring(0, pos);
+                var val = parms[i].substring(pos + 1);
+                qsParm[key] = val;
+            }
+        }
+        $.ajax({
+            url: '/getHotelRooms',
+            method: 'post',
+            dataType: 'json',
+            async: true,
+            data: {
+                id: qsParm.hotel
+            },
+            success: function (response) {
+                $('#roomTable tr').not(':first').not(':last').remove();
+                var html = '';
+                var rooms = jQuery.parseJSON(response);
+                for(var i = 0; i < rooms.length; i++)
+                    html +=
+                        '<tr>' +
+                        '<td>' + (i+1) + '</td>' +
+                        '<td style="display:none;" >'+ rooms[i].id+'</td>'+
+                        '<td>' + rooms[i].type +'</td>' +
+                        '<td>' + rooms[i].price + '</td>' +
+                        '<td>' + rooms[i].floor + '</td>' +
+                        '<td>' + rooms[i].detail + '</td>' +
+                        '<td> <a href="#"><button onclick="editRoom('+rooms[i].id+')" class="button btn-primary">Düzenle</button></a>\n' +
+                '             <a href="#"><button class="button btn-primary small">Resimleri Düzenle</button></a>\n' +
+                '            <button onclick="deleteRoom('+rooms[i].id+')" class="button btn-danger">Sil</button> </td>' +
+                        '</tr>';
+                $('#roomTable tr').first().after(html);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log('Ajax request failed.');
+            }
+        });
+
+    });
+
+    function addRoom(){
+        window.location = '/add-room-index?hotel=' + qsParm.hotel;
+    }
+
+    function editRoom(roomId){
+        window.location = '/edit-room-index?hotel=' + qsParm.hotel+'&room='+roomId;
+    }
+
+    function deleteRoom(id) {
+        $.ajax({
+           url:'/deleteRoom',
+            method: 'post',
+            dataType: 'json',
+            async: true,
+            data:  {
+                id: id
+            },
+            success: function (response) {
+                console.log(response);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log('Ajax request failed.');
+            }
+        });
+    }
+
+    $('#odalar').click(function () {
+        $("#mylink").attr('/add-room-index?hotel=' + qsParm.hotel);
+    });
+
+</script>
 {% endblock %}

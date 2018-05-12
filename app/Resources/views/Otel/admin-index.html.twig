@@ -3,65 +3,133 @@
 {% block body %}
 
     <div class="container">
-        <table class="table">
+        <a href="{{ path('admin') }}">Admin Index</a>
+        <table id="hotelTable" class="table">
             <thead>
             <tr>
+                <th style="display: none;" scope="col">id</th>
                 <th scope="col">#</th>
                 <th scope="col">Otel Adı</th>
                 <th scope="col">Site Linki</th>
                 <th scope="col">Yıldız</th>
                 <th scope="col">Telefon</th>
                 <th scope="col">Mail</th>
-                <th scope="col">Ülke</th>
                 <th scope="col">İl</th>
                 <th scope="col">İlçe</th>
                 <th scope="col">Adres</th>
                 <th scope="col">Detay</th>
                 <th scope="col">İşlemler</th>
-                <th scope="col"><button class="btn-success">Yeni Otel Ekleyin</button></th>
+                <th scope="col"><a href="{{ path('add-hotel-index') }}"><button class="button btn-success small">Yeni Otel Ekleyin</button></a></th>
+
             </tr>
             </thead>
             <tbody>
+            {% set sum = 0 %}
+            {% for hotel in hotels %}
+                {% set sum = sum + 1 %}
                 <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                    <td>@mdo</td>
-                    <td>@mdo</td>
-                    <td>@mdo</td>
-                    <td>@mdo</td>
-                    <td>@mdo</td>
-                    <td>@mdo</td>
-                    <td>@mdo</td>
+                    <td style="display:none;" >{{ hotel.id }}</td>
+                    <th scope="row">{{ sum}}</th>
+                    <td >{{ hotel.name }}</td>
+                    <td>{{ hotel.link }}</td>
+                    <td>{{ hotel.star }}</td>
+                    <td>{{ hotel.phone }}</td>
+                    <td>{{ hotel.mail }}</td>
+                    <td>{{ hotel.province }}</td>
+                    <td>{{ hotel.county }}</td>
+                    <td>{{ hotel.address }}</td>
+                    <td>{{ hotel.detail }}</td>
                     <td>
-                        <a href="{{ path('edit-hotel') }}"><button class="button btn-primary small">Düzenle</button></a>
-                        <a href="{{ path('room-index') }}"><button class="button btn-primary small">Odaları Gör</button></a>
+                        <a href="#"><button  id="otelEditBtn" onclick="otelEdit({{ hotel.id }})"  class="button btn-primary small">Düzenle</button></a>
+
+                        <a href="#"><button onclick="roomIndex({{ hotel.id }})" class="button btn-primary small">Odaları Gör</button></a>
+
                         <a href="{{ path('edit-hotel-pics') }}"><button class="button btn-primary small">Resimleri Düzenle</button></a>
-                        <button class="button btn-danger small">Sil</button>
+
+                        <button id="otelSilBtn" onclick= "otelSil({{ hotel.id }})" class="button btn-danger small">Sil</button>
                     </td>
                 </tr>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                    <td>@mdo</td>
-                    <td>@mdo</td>
-                    <td>@mdo</td>
-                    <td>@mdo</td>
-                    <td>@mdo</td>
-                    <td>@mdo</td>
-                    <td>@mdo</td>
-                    <td>
-                        <a href="{{ path('edit-hotel') }}"><button class="button btn-primary small">Düzenle</button></a>
-                        <a href="{{ path('room-index') }}"><button class="button btn-primary small">Odaları Gör</button></a>
-                        <a href="{{ path('edit-hotel-pics') }}"><button class="button btn-primary small">Resimleri Düzenle</button></a>
-                        <button class="button btn-danger small">Sil</button>
-                    </td>
-                </tr>
+            {% endfor %}
             </tbody>
         </table>
     </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+<script language="JavaScript">
+
+    function otelSil(id) {
+
+        function RefreshTable() {
+            $( "#hotelTable" ).load("admin #hotelTable" );
+        }
+
+        $.ajax({
+            url: '/deleteHotel',
+            method: 'post',
+            dataType: 'json',
+            async: true,
+            data:  {
+                id: id
+            },
+            success: function (response) {
+                $("#otelSilBtn").on("click", RefreshTable);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log('Ajax request failed.');
+            }
+        });
+    }
+
+</script>
+
+    <script language="JavaScript">
+
+    function otelEdit(id) {
+       $.ajax({
+           url: '/getHotelId' ,
+           method: 'post',
+           dataType: 'json',
+           async: true,
+           data:  {
+               id: id
+           },
+           success: function (response) {
+               window.location = '/edit-hotel?hotel=' + id;
+           },
+           error: function (xhr, textStatus, errorThrown) {
+               console.log('Ajax request failed.');
+           }
+       });
+
+    }
+
+    </script>
+
+    <script language="JavaScript">
+
+    function  roomIndex(id) {
+        $.ajax({
+            url: '/getHotelRooms' ,
+            method: 'post',
+            dataType: 'json',
+            async: true,
+            data:  {
+                id: id
+            },
+            success: function (response) {
+                window.location = '/room-index?hotel=' + id;
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log('Ajax request failed.');
+            }
+        });
+
+    }
+
+</script>
+
 
 {% endblock %}

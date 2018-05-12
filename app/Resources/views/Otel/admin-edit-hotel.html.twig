@@ -4,16 +4,17 @@
 
     <div class="container">
         <!-- form -->
+        <a href="{{ path('admin') }}">Admin Index</a> <a href="{{ path('edit-hotel') }}">Admin Index</a>
         <div class="contact">
 
             <div class="row">
                 <div class="col-sm-6 col-sm-offset-3">
                     <div class="spacer">
                         <h4>Otel Bilgileri</h4>
-                        <form role="form">
+                        <form id="hotelEditForm" role="form">
                             <div class="form-group">
                                 <label>Otel Adı</label>
-                                <input type="text" class="form-control" id="name" value="" required>
+                                <input type="text" class="form-control" name ="name" id="name" value="" required>
                             </div>
                             <div class="form-group">
                                 <label>Otel Linki</label>
@@ -21,7 +22,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Otel Yıldızı</label>
-                                <input type="number" class="form-control" id="start" value="" required>
+                                <input type="number" class="form-control" id="star" value="" required>
                             </div>
                             <div class="form-group">
                                 <label>Otel Telefonu</label>
@@ -30,22 +31,6 @@
                             <div class="form-group">
                                 <label>Otel E-mail Adresi</label>
                                 <input type="email" class="form-control" id="mail" value="" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Otel Ülke</label>
-                                <input type="text" class="form-control" id="county" value="" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Otel İl</label>
-                                <input type="text" class="form-control" id="province" value="" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Otel İlçe</label>
-                                <input type="text" class="form-control" id="state" value="" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Otel Açık Adresi</label>
-                                <input type="text" class="form-control" id="address" value="" required>
                             </div>
                             <div class="form-group">
                                 <label >İçerik</label>
@@ -60,5 +45,71 @@
     </div>
     <!-- form -->
 
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script language="JavaScript">
+        $(document).ready(function() {
+            var qsParm = new Array();
+            var query = window.location.search.substring(1);
+            var parms = query.split('&');
+            for (var i = 0; i < parms.length; i++) {
+                var pos = parms[i].indexOf('=');
+                if (pos > 0) {
+                    var key = parms[i].substring(0, pos);
+                    var val = parms[i].substring(pos + 1);
+                    qsParm[key] = val;
+                }
+            }
+
+            $.ajax({
+                url: '/getHotelId',
+                method: 'post',
+                dataType: 'json',
+                async: true,
+                data: {
+                    id: qsParm.hotel
+                },
+                success: function (response) {
+                    document.getElementById('name').value = response.name;
+                    document.getElementById('link').value = response.link;
+                    document.getElementById('star').value = response.star;
+                    document.getElementById('mail').value = response.mail;
+                    document.getElementById('detail').value = response.detail;
+                    document.getElementById('phone').value = response.phone;
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log('Ajax request failed.');
+                }
+            });
+
+            $( "#hotelEditForm").submit(function( event ) {
+                $.ajax({
+                    url: '/save-edited-hotel',
+                    method: 'post',
+                    dataType: 'json',
+                    async: true,
+                    data:  {
+                        id:qsParm.hotel,
+                        name: document.getElementById('name').value,
+                        star: document.getElementById('star').value,
+                        link: document.getElementById('link').value,
+                        mail: document.getElementById('mail').value,
+                        detail: document.getElementById('detail').value,
+                        phone: document.getElementById('phone').value
+                    },
+                    success: function (data, status) {
+                        window.location = '/admin';
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log('Ajax request failed.');
+                    }
+                });
+                event.preventDefault();
+            })
+        });
+    </script>
 
 {% endblock %}

@@ -17,7 +17,6 @@
     </div>
 </div>
 <!-- banner-->
-
 <!-- reservation-information -->
 <div id="information" class="spacer reserve-info ">
     <div class="container">
@@ -28,27 +27,19 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-xs-6">
-                                <select class="form-control">
-                                    <option>Oteller</option>
+                                <label for="province">İl</label>
+                                <select id="province" class="form-control">
+                                    {% for hotel in hotels %}
+                                        <option value="{{ hotel.province }}">{{ hotel.province }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="col-xs-6">
+                                <label for="county">İlçe</label>
                                 <select class="form-control">
-                                    <option>Odalar</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <select class="form-control">
-                                    <option>Yetişkin Sayısı</option>
-                                </select>
-                            </div>
-                            <div class="col-xs-6">
-                                <select class="form-control">
-                                    <option>Çocuk Sayısı</option>
+                                    {% for hotel in hotels %}
+                                        <option value="{{ hotel.county }}">{{ hotel.county }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
@@ -56,7 +47,43 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-xs-6">
-                                <label for="entranceDate">Giriş Tarihi</label>
+                                <label for="star">Yıldız</label>
+                                <select class="form-control">
+                                    {% for hotel in hotels %}
+                                        <option value={{ hotel.star }}>{{ hotel.star }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-xs-6">
+                                <label for="name">Oteller</label>
+                                <select class="form-control">
+                                    {% for hotel in hotels %}
+                                        <option value="{{ hotel.name }}">{{ hotel.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <label for="roomType">Odalar</label>
+                                <select class="form-control">
+                                    {% for room in rooms %}
+                                        <option value="{{ room.type }}">{{ room.type }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-xs-6">
+                                <label for="count">Kişi Sayısı</label>
+                                <input class="form-control" value="0" min="0" max="6" type="number">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <label id="lblgr" for="entranceDate">Giriş Tarihi</label>
                                 <input type="date" class="form-control">
                             </div>
                             <div class="col-xs-6">
@@ -118,4 +145,13 @@
     </div>
 </div>
 <!-- services -->
+{% endblock %}
+
+{% block javascripts %}
+
+
+<script type="text/javascript">
+
+</script>
+
 {% endblock %}

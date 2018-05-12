@@ -32,6 +32,9 @@
     <link rel="icon" href="" type="image/x-icon">
 
     <link rel="stylesheet" href="{{asset ('assets/style.css') }}">
+
+    {% block css %} {% endblock %}
+
 </head>
 
 <body id="home">
@@ -151,6 +154,9 @@
 
 <!-- custom script -->
 <script src="{{asset ('assets/script.js') }}"></script>
+
+<script language = "javascript"
+        src = "https://code.jquery.com/jquery-2.2.4.min.js"></script>
 
 
 {% block javascripts %}{% endblock %}

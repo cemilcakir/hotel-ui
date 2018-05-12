@@ -15,9 +15,13 @@ class IndexController extends Controller
 
         $client = new Client(['base_uri' => 'localhost:8001/']);
         $response = $client->request('GET', 'hotels');
-        $res = json_decode($response->getBody()->getContents());
+        $hotels = json_decode($response->getBody()->getContents());
 
-        return $this->render(':Otel:index.html.twig',array(
-            'sa' => $res[0]->name));
+
+        $client = new Client(['base_uri' => 'localhost:8001/']);
+        $response = $client->request('GET', 'rooms');
+        $rooms = json_decode($response->getBody()->getContents());
+
+        return $this->render(':Otel:index.html.twig',array('hotels' => $hotels,'rooms'=>$rooms));
     }
 }
