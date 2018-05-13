@@ -44,7 +44,7 @@
 
                         <a href="#"><button onclick="roomIndex({{ hotel.id }})" class="button btn-primary small">Odaları Gör</button></a>
 
-                        <a href="{{ path('edit-hotel-pics') }}"><button class="button btn-primary small">Resimleri Düzenle</button></a>
+                        <a  href="#"><button onclick="hotelPics({{ hotel.id }})" class="button btn-primary small">Resimleri Düzenle</button></a>
 
                         <button id="otelSilBtn" onclick= "otelSil({{ hotel.id }})" class="button btn-danger small">Sil</button>
                     </td>
@@ -130,6 +130,12 @@
     }
 
 </script>
+
+    <script language="JavaScript">
+        function hotelPics(id){
+           window.location= '/edit-room-pics';
+        }
+    </script>
 
 
 {% endblock %}

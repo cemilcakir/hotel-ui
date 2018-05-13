@@ -3,5 +3,133 @@
 {% block body %}
 
 
+    <br>
+    <div class="container">
+        <button class="btn-success" data-toggle="modal" data-target="#exampleModal">Resim Ekle</button>
+        <br><br>
+        <div id="resimler" class="row gallery">
+        <!--
+            <div>
+                <button class="btn-danger">Kaldır</button><br><br>
+            </div>
+            <div class="col-sm-4 wowload fadeInUp">
+                <a href="images/photos/1.jpg" title="Foods" class="gallery-image" data-gallery>
+                <img src="images/photos/1.jpg" class="img-responsive">
+                </a>
+            </div>
+            -->
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Resim Ekleyin</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="resimEkleForm" enctype="multipart/form-data" method="post" action="/add-hotel-pic">
+                        <div class="form-group">
+                            <input type="hidden" name="id" id="id">
+                            <label>Resim Açıklaması</label>
+                            <input style="width: 200px;" name="desripction" id="desripction" type="text" class="form-group">
+                        </div>
+                        <div class="form-group">
+                            <input type="file" accept="image/*" name="image" id="image" class="form-group">
+                        </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
+                    <button id="btnResimEkle" type="submit" class="btn btn-success">Ekle</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
+
+{% block javascripts %}
+
+    <script language="JavaScript">
+
+        var qsParm = new Array();
+        var query = window.location.search.substring(1);
+        var parms = query.split('&');
+        for (var i = 0; i < parms.length; i++) {
+            var pos = parms[i].indexOf('=');
+            if (pos > 0) {
+                var key = parms[i].substring(0, pos);
+                var val = parms[i].substring(pos + 1);
+                qsParm[key] = val;
+            }
+        }
+
+        $('#id').attr('value',qsParm.hotel);
+
+            $.ajax({
+                url: '/getHotelPics' ,
+                method: 'post',
+                dataType: 'json',
+                async: true,
+                data:  {
+                    id: qsParm.hotel
+                },
+                success: function (response) {
+                    var pics= jQuery.parseJSON(response);
+                    for(var i = 0; i < pics.length; i++){
+                        var html = '<div><button id="'+pics[i].id+'" onclick="deletePic('+pics[i].id+')" class="btn-danger">Kaldır</button><br><br></div><div class="col-sm-4 wowload fadeInUp " id="div'+pics[0].id+'" style="visibility:block;"><a  href="http://localhost:8001/'+pics[i].url+'" title="Foods" class="gallery-image" data-gallery><img src="http://localhost:8001/'+pics[i].url+'" class="img-responsive"></a></div>';
+                        $(html).appendTo('#resimler');
+                        var divName="#div"+pics[0].id;
+                        $('+divName+').attr('visibility','block');
+                    }
+                    //$('#pics').attr('href',response.url);
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log('Ajax request failed.');
+                }
+            });
+
+        $('#resimEkleForm').submit(function (event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+
+            $.ajax({
+                type:'POST',
+                url: $('#resimEkleForm').attr('action'),
+                data:formData,
+                cache:false,
+                contentType: false,
+                processData: false,
+                success:function(data){
+                   console.log(data);
+                },
+                error: function(data){
+                    console.log("error");
+                }
+            });
+        });
+
+        function deletePic(picId) {
+            $.ajax({
+                url:'/delete-hotel-pic',
+                method:'post',
+                data:{
+                    id:picId
+                },
+                success:function(data) {
+                    console.log(data);
+                },
+                error:function(data) {
+                  console.log(data);
+                }
+            })
+        }
+
+    </script>
+
+{% endblock  %}

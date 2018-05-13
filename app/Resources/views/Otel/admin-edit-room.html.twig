@@ -4,7 +4,11 @@
 
     <div class="container">
         <!-- form -->
-        <a href="{{ path('admin') }}">Admin Index</a><label>>>></label><a id="odalar" href="#">Odalar</a>
+        <a href="{{ path('admin') }}">Admin Index</a>
+        <label>>>></label>
+        <a id="odalar" href="#">Odalar</a>
+        <label>>>></label>
+        <a href="#">Oda Bilgileri Güncelle</a>
         <div class="contact">
 
             <div class="row">
@@ -91,6 +95,11 @@
                 });
                 event.preventDefault();
             })
+
+
+            $('#odalar').click(function () {
+                $('#odalar').prop("href", "/room-index?hotel="+qsParm.hotel);
+            });
         });
     </script>
 

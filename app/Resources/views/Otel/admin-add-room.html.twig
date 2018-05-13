@@ -6,9 +6,9 @@
         <!-- form -->
         <a href="{{ path('admin') }}">Admin Index</a>
         <label>>>></label>
-        <a id="odalar" href="">Odalar</a>
+        <a id="otelOda" href="#">Odalar</a>
         <label>>>></label>
-        <a id="odaEkle" href="">Oda Ekle</a>
+        <a id="odaEkle" href="#">Oda Ekle</a>
         <div class="contact">
 
             <div class="row">
@@ -79,16 +79,10 @@
                 }
             });
             event.preventDefault();
+        });
 
-
-
-            $('#odaEkle').click(function () {
-                $("#odaEkle").attr('/add-room-index?hotel=' + qsParm.hotel);
-            });
-
-            $('#odalar').click(function () {
-                $("#mylink").attr('/add-room-index?hotel=' + qsParm.hotel);
-            });
-        })
+        $('#otelOda').click(function () {
+            $('#otelOda').prop("href", "/room-index?hotel="+qsParm.hotel);
+        });
     </script>
 {% endblock %}

@@ -162,6 +162,65 @@ class AdminController extends Controller
         echo json_encode(array("ilceler"=>$ilceler));die();
     }
 
+    /**
+     * @Route("/getHotelPics")
+     */
+    public function getHotelPicsAction(Request $request){
+        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $response = $client->request('GET','/hotels/'.$request->get('id').'/images');
+
+        return new JsonResponse($response->getBody()->getContents());
+    }
+
+    /**
+     * @Route("/edit-hotel-pics",name="edit-hotel-pics")
+     */
+    public function editHotelPicsAction(){
+        return $this->render(':Otel:admin-hotel-pic.html.twig');
+    }
+
+    /**
+     * @Route("/add-hotel-pic")
+     */
+    public function addHotelPicAction(Request $request){
+        $client = new Client(['base_uri'=>'localhost:8001/']);
+
+        $picInfo = json_encode(array('description'=>$request->request->get('desripction'),'hotel_id'=>$request->request->get('id')));
+        $addPic = $client->request('POST','images', [
+            'body' => $picInfo,
+            'headers' => [
+                'Content-Type' => 'application/json'
+            ]
+        ]);
+
+        $createdPic = json_decode($addPic->getBody()->getContents());
+
+        $dizin = '/var/www/hotel-ui/web/images/';
+        $yuklenecek_dosya = $dizin . basename($_FILES['image']['name']);
+
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $yuklenecek_dosya)){
+            $response = $client->request('PUT','/images/'.$createdPic->id.'/upload', [
+                'body'=>fopen($yuklenecek_dosya,'r')
+            ]);
+            unlink($yuklenecek_dosya);
+            return new JsonResponse( $response->getBody()->getContents());
+        }
+        else {
+
+            return new JsonResponse("hata");
+        }
+    }
+
+    /**
+     * @Route("/delete-hotel-pic")
+     */
+    public function deleteHotelPicAction(Request $request){
+        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $response = $client->request('DELETE','images/'.$request->get('id'));
+
+        return new JsonResponse($response->getBody()->getContents());
+    }
+
     //-------------------------------------------------------------------------------------
 
     /**
@@ -255,13 +314,6 @@ class AdminController extends Controller
             ]
         ]);
         return new JsonResponse('başarılı');
-    }
-
-    /**
-     * @Route("/edit-hotel-pics",name="edit-hotel-pics")
-     */
-    public function editHotelPicsAction(){
-        return $this->render(':Otel:admin-hotel-pic.html.twig');
     }
 
     /**
