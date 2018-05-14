@@ -7,20 +7,37 @@
     <div class="container">
 
         <h1 class="title">Galeri</h1>
-        <div class="row gallery">
+        <div id="resimler" class="row gallery">
             <div class="col-sm-4 wowload fadeInUp"><a href="images/photos/1.jpg" title="Foods" class="gallery-image" data-gallery><img src="images/photos/1.jpg" class="img-responsive"></a></div>
-            <div class="col-sm-4 wowload fadeInUp"><a href="images/photos/2.jpg" title="Coffee" class="gallery-image" data-gallery><img src="images/photos/2.jpg" class="img-responsive"></a></div>
-            <div class="col-sm-4 wowload fadeInUp"><a href="images/photos/3.jpg" title="Travel" class="gallery-image" data-gallery><img src="images/photos/3.jpg" class="img-responsive"></a></div>
-            <div class="col-sm-4 wowload fadeInUp"><a href="images/photos/4.jpg" title="Adventure" class="gallery-image" data-gallery><img src="images/photos/4.jpg" class="img-responsive"></a></div>
-            <div class="col-sm-4 wowload fadeInUp"><a href="images/photos/5.jpg" title="Fruits" class="gallery-image" data-gallery><img src="images/photos/5.jpg" class="img-responsive"></a></div>
-            <div class="col-sm-4 wowload fadeInUp"><a href="images/photos/6.jpg" title="Summer" class="gallery-image" data-gallery><img src="images/photos/6.jpg" class="img-responsive"></a></div>
-            <div class="col-sm-4 wowload fadeInUp"><a href="images/photos/7.jpg" title="Bathroom" class="gallery-image" data-gallery><img src="images/photos/7.jpg" class="img-responsive"></a></div>
-            <div class="col-sm-4 wowload fadeInUp"><a href="images/photos/8.jpg" title="Rooms" class="gallery-image" data-gallery><img src="images/photos/8.jpg" class="img-responsive"></a></div>
-            <div class="col-sm-4 wowload fadeInUp"><a href="images/photos/9.jpg" title="Big Room" class="gallery-image" data-gallery><img src="images/photos/9.jpg" class="img-responsive"></a></div>
-            <div class="col-sm-4 wowload fadeInUp"><a href="images/photos/11.jpg" title="Living Room" class="gallery-image" data-gallery><img src="images/photos/11.jpg" class="img-responsive"></a></div>
-            <div class="col-sm-4 wowload fadeInUp"><a href="images/photos/1.jpg" title="Fruits" class="gallery-image" data-gallery><img src="images/photos/1.jpg" class="img-responsive"></a></div>
-            <div class="col-sm-4 wowload fadeInUp"><a href="images/photos/3.jpg" title="Travel" class="gallery-image" data-gallery><img src="images/photos/3.jpg" class="img-responsive"></a></div>
         </div>
     </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script language="JavaScript">
+
+        $.ajax({
+            url: '/images' ,
+            method: 'post',
+            dataType: 'json',
+            async: true,
+            success: function (response) {
+                console.log(response);
+                var pics= jQuery.parseJSON(response);
+                var html="";
+                for(var i = 0; i < pics.length; i++){
+                    html += '<div></div><div class="col-sm-4 fadeInUp " id="div'+pics[i].id+'"><a  href="http://localhost:8001/'+pics[i].url+'" title="'+pics[i].description+'" class="gallery-image" data-gallery><img src="http://localhost:8001/'+pics[i].url+'"></a></div>';
+                    //$(html).appendTo('#resimler');
+                }
+                $('#resimler').html(html);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log('Ajax request failed.');
+            }
+        });
+
+    </script>
 
 {% endblock %}

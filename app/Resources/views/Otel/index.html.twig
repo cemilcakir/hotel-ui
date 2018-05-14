@@ -108,13 +108,13 @@
         <div class="row">
             <div class="col-sm-6">
                 <!-- OtelCarousel -->
-                <div id="OtelCarousel" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                        <!-- Otellerin resimleri gelecek -->
+                <div class="carousel slide" data-ride="carousel">
+                    <div id="hotelCarousel" class="carousel-inner">
+                        <!-- Otellerin resimleri gelecek
                         <div class="item active"><img src="images/photos/8.jpg" class="img-responsive" alt="slide"></div>
                         <div class="item  height-full"><img src="images/photos/9.jpg"  class="img-responsive" alt="slide"></div>
                         <div class="item  height-full"><img src="images/photos/10.jpg"  class="img-responsive" alt="slide"></div>
-                        <!-- Otellerin resimleri gelecek -->
+                        Otellerin resimleri gelecek -->
                     </div>
                     <!-- Controls -->
                     <a class="left carousel-control" href="#OtelCarousel" role="button" data-slide="prev"><i class="fa fa-angle-left"></i></a>
@@ -126,13 +126,13 @@
             <!-- OdaCarousel -->
             <div class="col-sm-6">
                 <!-- OdaCarousel -->
-                <div id="OdaCarousel" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                        <!-- Odaların resimleri gelecek -->
+                <div class="carousel slide" data-ride="carousel">
+                    <div id="roomCarousel" class="carousel-inner">
+                        <!-- Odaların resimleri gelecek
                         <div class="item active"><img src="images/photos/8.jpg" class="img-responsive" alt="slide"></div>
                         <div class="item  height-full"><img src="images/photos/9.jpg"  class="img-responsive" alt="slide"></div>
                         <div class="item  height-full"><img src="images/photos/10.jpg"  class="img-responsive" alt="slide"></div>
-                        <!-- Odaların resimleri gelecek -->
+                         Odaların resimleri gelecek -->
                     </div>
                     <!-- Controls -->
                     <a class="left carousel-control" href="#OdaCarousel" role="button" data-slide="prev"><i class="fa fa-angle-left"></i></a>
@@ -150,8 +150,33 @@
 {% block javascripts %}
 
 
-<script type="text/javascript">
+    <script language="JavaScript">
 
-</script>
+
+        $.ajax({
+            url:'/images',
+            method:'post',
+            success:function (data) {
+                var resimler = jQuery.parseJSON(data);
+                var roomc='<div class="item active"><img src="http://localhost:8001'+resimler[0].url+'" class="img-responsive" alt="slide"></div>';
+                var html ='<div class="item active"><img src="http://localhost:8001'+resimler[0].url+'" class="img-responsive" alt="slide"></div>';
+                for(var i=1;i<resimler.length;i++){
+                    if(resimler[i].room_id != undefined){
+                        html+='<div class="item  height-full"><img src="http://localhost:8001'+resimler[i].url+'"  class="img-responsive" alt="slide"></div>';
+                        roomc+='<div class="item  height-full"><img src="http://localhost:8001'+resimler[i].url+'"  class="img-responsive" alt="slide"></div>';
+                    }
+                    else{
+                        html+='<div class="item  height-full"><img src="http://localhost:8001'+resimler[i].url+'"  class="img-responsive" alt="slide"></div>';
+                    }
+                }
+                $(html).appendTo('#hotelCarousel');
+                $(roomc).appendTo('#roomCarousel');
+            },
+            error:function (data) {
+                console.log(data);
+            }
+        });
+
+    </script>
 
 {% endblock %}

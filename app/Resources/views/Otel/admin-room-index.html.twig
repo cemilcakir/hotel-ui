@@ -62,7 +62,7 @@
                         '<td>' + rooms[i].floor + '</td>' +
                         '<td>' + rooms[i].detail + '</td>' +
                         '<td> <a href="#"><button onclick="editRoom('+rooms[i].id+')" class="button btn-primary">Düzenle</button></a>\n' +
-                '             <a href="#"><button class="button btn-primary small">Resimleri Düzenle</button></a>\n' +
+                '             <a href="#"><button onclick="roomPics('+rooms[i].id+')" class="button btn-primary small">Resimleri Düzenle</button></a>\n' +
                 '            <button onclick="deleteRoom('+rooms[i].id+')" class="button btn-danger">Sil</button> </td>' +
                         '</tr>';
                 $('#roomTable tr').first().after(html);
@@ -98,6 +98,10 @@
                 console.log('Ajax request failed.');
             }
         });
+    }
+
+    function roomPics(id){
+        window.location="/edit-room-pics?hotel="+qsParm.hotel+"&room="+id;
     }
 
     $('#odalar').click(function () {

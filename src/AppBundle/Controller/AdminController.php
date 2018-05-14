@@ -322,4 +322,55 @@ class AdminController extends Controller
     public function editRoomPicsAction(){
         return $this->render(':Otel:admin-room-pic.html.twig');
     }
+
+    /**
+     * @Route("/add-room-pic")
+     */
+    public function addRoomPicAction(Request $request){
+        $client = new Client(['base_uri'=>'localhost:8001/']);
+
+        $picInfo = json_encode(array('description'=>$request->request->get('desripction'),'hotel_id'=>$request->request->get('hotelId'),'room_id'=>$request->request->get('roomId')));
+        $addPic = $client->request('POST','images', [
+            'body' => $picInfo,
+            'headers' => [
+                'Content-Type' => 'application/json'
+            ]
+        ]);
+
+        $createdPic = json_decode($addPic->getBody()->getContents());
+
+        $dizin = '/var/www/hotel-ui/web/images/';
+        $yuklenecek_dosya = $dizin . basename($_FILES['image']['name']);
+
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $yuklenecek_dosya)){
+            $response = $client->request('PUT','/images/'.$createdPic->id.'/upload', [
+                'body'=>fopen($yuklenecek_dosya,'r')
+            ]);
+            unlink($yuklenecek_dosya);
+            return new JsonResponse( $response->getBody()->getContents());
+        }
+        else {
+
+            return new JsonResponse("hata");
+        }
+    }
+
+    /**
+     * @Route("/get-room-pics")
+     */
+    public function getRoomPicsAction(Request $request){
+        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $response = $client->request('GET','rooms/'.$request->request->get('id').'/images');
+        return new JsonResponse($response->getBody()->getContents());
+    }
+
+    /**
+     * @Route("/delete-room-pic")
+     */
+    public function deleteRoomPicAction(Request $request){
+        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $response = $client->request('DELETE','images/'.$request->get('id'));
+
+        return new JsonResponse($response->getBody()->getContents());
+    }
 }

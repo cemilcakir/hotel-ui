@@ -2,8 +2,10 @@
 
 namespace AppBundle\Controller;
 
+use GuzzleHttp\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class GalleryController extends Controller
 {
@@ -12,5 +14,14 @@ class GalleryController extends Controller
      */
     public function IndexAction(){
         return $this->render(':Otel:gallery.html.twig');
+    }
+    /**
+     * @Route("/images")
+     */
+    public function imagesAction(){
+        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $response = $client->request('get','images');
+
+        return new JsonResponse($response->getBody()->getContents());
     }
 }

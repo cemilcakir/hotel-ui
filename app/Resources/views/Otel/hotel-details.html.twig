@@ -11,43 +11,15 @@
         <!-- Otel detayları başlangıç -->
 
         <div id="HotelDetails" class="carousel slide" data-ride="carousel">
-            <div class="carousel-inner">
-                <!-- Otel resimleri gelecek-->
-                <div class="item active"><img src="images/photos/8.jpg" class="img-responsive" alt="slide"></div>
-                <div class="item  height-full"><img src="images/photos/9.jpg"  class="img-responsive" alt="slide"></div>
-                <div class="item  height-full"><img src="images/photos/10.jpg"  class="img-responsive" alt="slide"></div>
-                <!-- Otel resimleri gelecek-->
-            </div>
-            <!-- Controls -->
+            <div id ="hotelPics" class="carousel-inner"></div>
             <a class="left carousel-control" href="#HotelDetails" role="button" data-slide="prev"><i class="fa fa-angle-left"></i></a>
             <a class="right carousel-control" href="#HotelDetails" role="button" data-slide="next"><i class="fa fa-angle-right"></i></a>
+
         </div>
         <!-- Hotelarousel-->
 
         <div class="room-features spacer">
-            <div class="row">
-                <div class="col-sm-12 col-md-5">
-                    <p>Space in your house How to sell faster than your neighbors How to make a strategic use. To discourage you by telling. To discourage you by telling. I m going to outline 14 different ways that I ve found you. The real goal of any talk or speech. The real goal of any talk or speech. I m going to outline 14 different ways that I ve found you. The real goal of any talk or speech. I m going to outline 14 different ways that I ve found you. The real goal of any talk or speech. To discourage you by telling. To discourage you by telling. Space in your house How to sell faster than your neighbors How to make a strategic use. The real goal of any talk or speech.</p>
-                    <p>By Learning Ways To Become Peaceful. One of the greatest barriers to making the sale is your prospect's natural. Don't stubbornly. Don't stubbornly. Don't stubbornly. -And Gain Power By Learning Ways To Become Peaceful. </p>
-                </div>
-                <div class="col-sm-6 col-md-3 amenitites">
-                    <h3>Amenitites</h3>
-                    <ul>
-                        <li>One of the greatest barriers to making the sale is your prospect.</li>
-                        <li>Principle to work to make more money while having more fun.</li>
-                        <li>Unlucky people. Don't stubbornly.</li>
-                        <li>Principle to work to make more money while having more fun.</li>
-                        <li>Space in your house How to sell faster than your neighbors</li>
-                    </ul>
-
-
-                </div>
-                <div class="col-sm-3 col-md-2">
-                    <div class="size-price">Size<span>44 sq</span></div>
-                </div>
-                <div class="col-sm-3 col-md-2">
-                    <div class="size-price">Price<span>$200.00</span></div>
-                </div>
+            <div id="hotelInfo" class="row">
             </div>
         </div>
 
@@ -55,20 +27,112 @@
 
         <h2 class="title">Odalar</h2>
         <!-- Otelin odaları -->
-        <div class="row">
-            <div class="col-sm-6 wowload fadeInUp">
-                <div class="rooms">
-                    <img src="images/photos/10.jpg" class="img-responsive">
-                    <div class="info">
-                        <h3>Luxirious Suites</h3
-                        ><p> Missed lovers way one vanity wishes nay but. Use shy seemed within twenty wished old few regret passed. Absolute one hastened mrs any sensible</p>
-                        <a href="{{ path('room-details') }}" class="btn btn-default">Ayrıntıya Git</a>
-                    </div>
-                </div>
-            </div>
+        <div id="rooms" class="row">
+
         </div>
-        </div>
-        <!-- Otelin odaları -->
-    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script language="JavaScript">
+
+        var qsParm = new Array();
+        var query = window.location.search.substring(1);
+        var parms = query.split('&');
+        for (var i = 0; i < parms.length; i++) {
+            var pos = parms[i].indexOf('=');
+            if (pos > 0) {
+                var key = parms[i].substring(0, pos);
+                var val = parms[i].substring(pos + 1);
+                qsParm[key] = val;
+            }
+        }
+
+        $.ajax({
+            url:'/getHotelPics',
+            method:'post',
+            data:{
+                id:qsParm.hotel
+            },
+            success:function (data) {
+                var resimler = jQuery.parseJSON(data);
+                var html ='<div class="item active"><img src="http://localhost:8001'+resimler[0].url+'" class="img-responsive" alt="slide"></div>';
+                for(var i=1;i<resimler.length;i++){
+                    html+='<div class="item  height-full"><img src="http://localhost:8001'+resimler[i].url+'"  class="img-responsive" alt="slide"></div>';
+
+                }
+                $(html).appendTo('#hotelPics');
+            },
+            error:function (data) {
+                console.log(data);
+            }
+        });
+
+        $.ajax({
+            url:'/getHotelId',
+            method:'post',
+            data:{
+                id:qsParm.hotel
+            },
+            success:function (data) {
+                var html="";
+                html ='<div class="col-sm-12 col-md-5"><p>'+data.detail+'</p></div>';
+                $(html).appendTo($('#hotelInfo'));
+
+            },
+            error:function (data) {
+                console.log(data);
+            }
+        });
+
+        function putPics(rooms) {
+            for(var i=0;i<rooms.length;i++){
+                var roomPic="";
+                $.ajax({
+                    url:'/getHotelPics',
+                    method:'post',
+                    data:{
+                        id: rooms[i].id
+                    },
+                    success:function (data2) {
+                        if(jQuery.parseJSON(data2)[0] != undefined){
+                            for(var k =0;k<i;k++){
+                                var html="";
+                                roomPic= "http://localhost:8001"+jQuery.parseJSON(data2)[0].url;
+                                html='<div class="col-sm-6 fadeInUp">'+
+                                    ' <div class="rooms"><img src="'+roomPic+'" class="img-responsive">'+
+                                    '<div  class="info">'+
+                                    '<h3>'+rooms[k].type+'</h3>'+
+                                    '<p> '+rooms[k].detail.substr(0,25)+'...</p>'+
+                                    '<a href="/room-details?room='+rooms[k].id+'" class="btn btn-default">Ayrıntıya Git</a>'
+                                ;
+                                $(html).appendTo('#rooms');
+                            }
+                        }
+                    },
+                    error:function (data) {
+                        console.log(data);
+                    }
+                });
+            }
+        }
+
+        $.ajax({
+           url:'/getHotelRooms',
+           method:'post',
+           data:{
+               id:qsParm.hotel
+           },
+            success:function (data) {
+                 var rooms=jQuery.parseJSON(data);
+                 putPics(rooms);
+            },
+            error:function (data) {
+                console.log(data);
+            }
+        });
+
+    </script>
 
 {% endblock %}

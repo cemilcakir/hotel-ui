@@ -62,10 +62,6 @@
 
     function otelSil(id) {
 
-        function RefreshTable() {
-            $( "#hotelTable" ).load("admin #hotelTable" );
-        }
-
         $.ajax({
             url: '/deleteHotel',
             method: 'post',
@@ -75,7 +71,6 @@
                 id: id
             },
             success: function (response) {
-                $("#otelSilBtn").on("click", RefreshTable);
             },
             error: function (xhr, textStatus, errorThrown) {
                 console.log('Ajax request failed.');
@@ -133,7 +128,7 @@
 
     <script language="JavaScript">
         function hotelPics(id){
-           window.location= '/edit-room-pics';
+           window.location= '/edit-hotel-pics?hotel='+id;
         }
     </script>
 

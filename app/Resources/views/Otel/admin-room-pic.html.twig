@@ -8,13 +8,14 @@
     <div class="container">
         <button class="btn-success" data-toggle="modal" data-target="#exampleModal">Resim Ekle</button>
         <br><br>
-        <div class="row gallery">
-            <div class="col-sm-4 wowload fadeInUp">
+        <div id="resimler" class="row gallery">
+                <!--
                 <button class="btn-danger">Kaldır</button>
                 <br><br>
                 <a href="images/photos/3.jpg" title="Travel" class="gallery-image" data-gallery>
                     <img src="images/photos/3.jpg" class="img-responsive">
                 </a>
+                 -->
             </div>
         </div>
     </div>
@@ -24,21 +25,135 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Resim Ekleyin</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="">
-                        <input type="file" class="form-group">
+                    <form id="resimEkleForm" enctype="multipart/form-data" method="post" action="/add-room-pic">
+                        <div class="form-group">
+                            <input type="hidden" name="hotelId" id="hotelId">
+                            <input type="hidden" name="roomId" id="roomId">
+                            <label>Resim Açıklaması</label>
+                            <input style="width: 200px;" name="desripction" id="desripction" type="text" class="form-group">
+                        </div>
+                        <div class="form-group">
+                            <input type="file" accept="image/*" name="image" id="image" class="form-group">
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
+                            <button id="btnResimEkle" type="submit" class="btn btn-success">Ekle</button>
+                        </div>
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Ekle</button>
                 </div>
             </div>
         </div>
     </div>
 {% endblock %}
+
+{% block javascripts %}
+
+    <script language="JavaScript">
+
+        var qsParm = new Array();
+        var query = window.location.search.substring(1);
+        var parms = query.split('&');
+        for (var i = 0; i < parms.length; i++) {
+            var pos = parms[i].indexOf('=');
+            if (pos > 0) {
+                var key = parms[i].substring(0, pos);
+                var val = parms[i].substring(pos + 1);
+                qsParm[key] = val;
+            }
+        }
+
+        $('#hotelId').attr('value',qsParm.hotel);
+        $('#roomId').attr('value',qsParm.room);
+
+        $('#resimEkleForm').submit(function (event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+
+            $.ajax({
+                type:'POST',
+                url: $('#resimEkleForm').attr('action'),
+                data:formData,
+                cache:false,
+                contentType: false,
+                processData: false,
+                success:function(data){
+                    getRoomPics(qsParm.room);
+                },
+                error: function(data){
+                    console.log("error");
+                }
+            });
+        });
+
+        function getRoomPics(roomId){
+            $.ajax({
+                url: '/get-room-pics' ,
+                method: 'post',
+                dataType: 'json',
+                async: true,
+                data:  {
+                    id: roomId
+                },
+                success: function (response) {
+                    var pics= jQuery.parseJSON(response);
+                    var html ="";
+                    for(var i = 0; i < pics.length; i++){
+                        html += '<div></div><div class="col-sm-4 fadeInUp " id="div'+pics[i].id+'"><button id="'+pics[i].id+'" onclick="deletePic('+pics[i].id+')" class="btn-danger">Kaldır</button><br><br><a  href="http://localhost:8001/'+pics[i].url+'" title="Foods" class="gallery-image" data-gallery><img src="http://localhost:8001/'+pics[i].url+'"></a></div>';
+                        //$(html).appendTo('#resimler');
+                    }
+                    $('#resimler').html(html);
+                    //$('#pics').attr('href',response.url);
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log('Ajax request failed.');
+                }
+            });
+        }
+        $.ajax({
+            url: '/get-room-pics' ,
+            method: 'post',
+            dataType: 'json',
+            async: true,
+            data:  {
+                id: qsParm.room
+            },
+            success: function (response) {
+                var pics= jQuery.parseJSON(response);
+                for(var i = 0; i < pics.length; i++){
+                    var html = '<div></div><div class="col-sm-4 fadeInUp " id="div'+pics[i].id+'"><button id="'+pics[i].id+'" onclick="deletePic('+pics[i].id+')" class="btn-danger">Kaldır</button><br><br><a  href="http://localhost:8001/'+pics[i].url+'" title="Foods" class="gallery-image" data-gallery><img src="http://localhost:8001/'+pics[i].url+'"></a></div>';
+                    //$('#resimler').html(html);
+                    $(html).appendTo('#resimler');
+                }
+                //$('#pics').attr('href',response.url);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log('Ajax request failed.');
+            }
+        });
+
+        function deletePic(picId) {
+            $.ajax({
+                url:'/delete-room-pic',
+                method:'post',
+                data:{
+                    id:picId
+                },
+                success:function(data) {
+                    getRoomPics(qsParm.room);
+                },
+                error:function(data) {
+                    console.log(data);
+                }
+            })
+        }
+
+    </script>
+
+{% endblock  %}

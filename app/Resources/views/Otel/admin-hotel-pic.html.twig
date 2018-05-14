@@ -46,7 +46,8 @@
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
                     <button id="btnResimEkle" type="submit" class="btn btn-success">Ekle</button>
                 </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -71,6 +72,30 @@
 
         $('#id').attr('value',qsParm.hotel);
 
+
+        function getHotelPics(hotelId){
+            $.ajax({
+                url: '/getHotelPics' ,
+                method: 'post',
+                dataType: 'json',
+                async: true,
+                data:  {
+                    id: hotelId
+                },
+                success: function (response) {
+                    var pics= jQuery.parseJSON(response);
+                    var html="";
+                    for(var i = 0; i < pics.length; i++){
+                        html += '<div></div><div class="col-sm-4 fadeInUp " id="div'+pics[i].id+'"><button id="'+pics[i].id+'" onclick="deletePic('+pics[i].id+')" class="btn-danger">Kaldır</button><br><br><a  href="http://localhost:8001/'+pics[i].url+'" title="Foods" class="gallery-image" data-gallery><img src="http://localhost:8001/'+pics[i].url+'"></a></div>';
+                        //$(html).appendTo('#resimler');
+                    }
+                    $('#resimler').html(html);
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log('Ajax request failed.');
+                }
+            });
+        }
             $.ajax({
                 url: '/getHotelPics' ,
                 method: 'post',
@@ -82,10 +107,9 @@
                 success: function (response) {
                     var pics= jQuery.parseJSON(response);
                     for(var i = 0; i < pics.length; i++){
-                        var html = '<div><button id="'+pics[i].id+'" onclick="deletePic('+pics[i].id+')" class="btn-danger">Kaldır</button><br><br></div><div class="col-sm-4 wowload fadeInUp " id="div'+pics[0].id+'" style="visibility:block;"><a  href="http://localhost:8001/'+pics[i].url+'" title="Foods" class="gallery-image" data-gallery><img src="http://localhost:8001/'+pics[i].url+'" class="img-responsive"></a></div>';
+                        var html = '<div></div><div class="col-sm-4 fadeInUp " id="div'+pics[i].id+'"><button id="'+pics[i].id+'" onclick="deletePic('+pics[i].id+')" class="btn-danger">Kaldır</button><br><br><a  href="http://localhost:8001/'+pics[i].url+'" title="Foods" class="gallery-image" data-gallery><img src="http://localhost:8001/'+pics[i].url+'"></a></div>';
+                        //$('#resimler').html(html);
                         $(html).appendTo('#resimler');
-                        var divName="#div"+pics[0].id;
-                        $('+divName+').attr('visibility','block');
                     }
                     //$('#pics').attr('href',response.url);
                 },
@@ -106,7 +130,7 @@
                 contentType: false,
                 processData: false,
                 success:function(data){
-                   console.log(data);
+                    getHotelPics(qsParm.hotel);
                 },
                 error: function(data){
                     console.log("error");
@@ -122,7 +146,7 @@
                     id:picId
                 },
                 success:function(data) {
-                    console.log(data);
+                    getHotelPics(qsParm.hotel);
                 },
                 error:function(data) {
                   console.log(data);
