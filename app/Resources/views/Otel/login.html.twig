@@ -12,12 +12,12 @@
                     <div class="col-sm-6 col-sm-offset-3">
                         <div class="spacer">
                             <h4>Giriş Yapın</h4>
-                            <form role="form">
+                            <form id="loginForm" role="form">
                                 <div class="form-group">
-                                    <input type="email" class="form-control" id="email" placeholder="Email adresinizi giriniz.">
+                                    <input type="email" required class="form-control" id="email" placeholder="Email adresinizi giriniz.">
                                 </div>
                                 <div class="form-group">
-                                    <input type="password" class="form-control" id="password" placeholder="Şifrenizi giriniz.">
+                                    <input type="password" required class="form-control" id="password" placeholder="Şifrenizi giriniz.">
                                 </div>
                                 <button type="submit" class="btn btn-default">Giriş</button>
                                 <br><br><br>
@@ -29,5 +29,38 @@
         </div>
     </div>
         <!-- form -->
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script language="JavaScript">
+
+        $( "#loginForm").submit(function( event ) {
+            $.ajax({
+                url: '/signin',
+                method: 'post',
+                dataType: 'json',
+                async: true,
+                data:  {
+                    mail:document.getElementById('email').value,
+                    password:document.getElementById('password').value
+                },
+                success: function (data, status) {
+                    if(data == "fail"){
+                        alert("Kullanıcı adı veya şifreniz yanlış.");
+                        document.getElementById("loginForm").reset();
+                        return;
+                    }
+                    window.location = "/";
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log(textStatus);
+                }
+            });
+            event.preventDefault();
+        })
+
+    </script>
 
 {% endblock %}

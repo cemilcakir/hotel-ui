@@ -12,28 +12,28 @@
                 <div class="col-sm-6 col-sm-offset-3">
                     <div class="spacer">
                         <h4>Üye Olun</h4>
-                        <form role="form">
+                        <form id="singupForm" role="form">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="name" placeholder="Adınızı giriniz." required>
+                                <input type="text" class="form-control" name="name" id="name" placeholder="Adınızı giriniz." required>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control" id="lastName" placeholder="Soyadınızı giriniz." required>
+                                <input type="text" class="form-control" name="lastName" id="lastName" placeholder="Soyadınızı giriniz." required>
                             </div>
                             <div class="form-group">
                                 <label>Doğum tarihinizi giriniz.</label>
-                                <input type="date" class="form-control" id="dateOfBirth" placeholder="Doğum tarihinizi giriniz." required>
+                                <input type="date" class="form-control" name="dateOfBirth" id="dateOfBirth" placeholder="Doğum tarihinizi giriniz." required>
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control" id="tc" placeholder="T.C. kimlik numaranızı giriniz." required>
+                                <input type="text" class="form-control" name="tc"  id="tc" placeholder="T.C. kimlik numaranızı giriniz." required>
                             </div>
                             <div class="form-group">
-                                <input type="email" class="form-control" id="email" placeholder="Email adresinizi giriniz." required>
+                                <input type="email" class="form-control" name="email"  id="email" placeholder="Email adresinizi giriniz." required>
                             </div>
                             <div class="form-group">
-                                <input type="password" class="form-control" id="password" placeholder="Şifrenizi giriniz." required>
+                                <input type="password" class="form-control" name="password"  id="password" placeholder="Şifrenizi giriniz." required>
                             </div>
                             <div class="form-group">
-                                <input type="password" class="form-control" id="password" placeholder="Şifrenizi tekrar giriniz." required>
+                                <input type="password" class="form-control" name="repassword"  id="repassword" placeholder="Şifrenizi tekrar giriniz." required>
                             </div>
                             <button type="submit" class="btn btn-default">Üye olun</button>
                         </form>
@@ -43,5 +43,48 @@
         </div>
     </div>
     <!-- form -->
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script language="JavaScript">
+
+        $( "#singupForm").submit(function( event ) {
+            $.ajax({
+                url: '/new-user',
+                method: 'post',
+                dataType: 'json',
+                async: true,
+                data:  {
+                    name:document.getElementById('name').value,
+                    last_name:document.getElementById('lastName').value,
+                    date_of_birth:document.getElementById('dateOfBirth').value,
+                    kullanici_tc:document.getElementById('tc').value,
+                    mail:document.getElementById('email').value,
+                    password:document.getElementById('password').value,
+                    repassword:document.getElementById('repassword').value
+                },
+                success: function (data, status) {
+                    if(data == "Şifreler uyuşmuyor."){
+                        alert(data);
+                        document.getElementById("singupForm").reset();
+                        return;
+                    }
+                    if(data == "var"){
+                        alert("Zaten bir üyeliğiniz var");
+                        document.getElementById("singupForm").reset();
+                        return;
+                    }
+                    document.getElementById("singupForm").reset();
+                    window.location = '/login';
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                }
+            });
+            event.preventDefault();
+        })
+
+    </script>
 
 {% endblock %}
