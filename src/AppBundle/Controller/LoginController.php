@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Request;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\RequestException;
+use Symfony\Component\HttpFoundation\Session\Session;
+
 
 class LoginController extends Controller
 {
@@ -24,6 +26,17 @@ class LoginController extends Controller
      */
     public function signupAction(){
         return $this->render(':Otel:sign-up.html.twig');
+    }
+
+    /**
+     * @Route("/signout", name="signout")
+     */
+    public function signOutAction(){
+        $session = $this->get('session');
+        $session->clear();
+
+        $response = $this->forward('AppBundle:Index:index');
+        return $response;
     }
 
     /**
@@ -88,6 +101,19 @@ class LoginController extends Controller
                 'Accept'        => 'application/json',
             ]]);
             $user = json_decode($response->getBody()->getContents());
+
+            $session = new Session();
+            $session->clear();
+            $session->start();
+
+            $session->set('userFirstName',$person[0]->first_name);
+            $session->set('userLastName',$person[0]->last_name);
+            $session->set('userId',$userId);
+            $session->set('userTC',$person[0]->kullanici_t_c);
+            $session->set('userBirth',$person[0]->date_of_birth);
+            $session->set('userMail',$person[0]->mail);
+            $session->set('userToken',$token);
+            $session->set('userRole',$user->roles[0]);
 
             return new JsonResponse($person);
         } catch (RequestException $e) {

@@ -24,11 +24,18 @@ class AdminController extends Controller
      */
     public function hotelIndexAction(){
 
-        $client = new Client(['base_uri'=>'localhost:8001/']);
-        $response = $client->request('GET','hotels');
-        $hotels = json_decode($response->getBody()->getContents());
+        $session = $this->get('session');
+        if($session->get('userRole') != 'ROLE_ADMIN'){
+            $response = $this->forward('AppBundle:Index:index');
+            return $response;
+        }
+        else{
+            $client = new Client(['base_uri'=>'localhost:8001/']);
+            $response = $client->request('GET','hotels');
+            $hotels = json_decode($response->getBody()->getContents());
 
-        return $this->render(':Otel:admin-index.html.twig',array('hotels' => $hotels));
+            return $this->render(':Otel:admin-index.html.twig',array('hotels' => $hotels));
+        }
     }
 
     /**

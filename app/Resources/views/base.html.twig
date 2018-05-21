@@ -64,7 +64,16 @@
                 <li><a href="{{ path('gallery') }}">Galeri</a></li>
                 <li><a href="{{ path('about-us') }}">Hakkımızda</a></li>
                 <li><a href="{{ path('contact') }}">İletişim</a></li>
+                {%  if(app.session.get('userId') != null or app.session.get('userId') != "") %}
+                    <li><a href="{{ path('signout') }}">
+                            Hoşgeldiniz. {{  app.session.get('userFirstName')}} {{ app.session.get('userLastName') }}
+                        </a></li>
+                    {% if (app.session.get('userRole') == "ROLE_ADMIN") %}
+                        <li><a href="{{ path('admin') }}">Admin Paneli</a></li>
+                    {% endif %}
+                    {% else %}
                 <li><a href="{{ path('login') }}">Giriş Yap</a></li>
+                {% endif %}
             </ul>
         </div><!-- Wnavbar-collapse -->
     </div><!-- container-fluid -->
