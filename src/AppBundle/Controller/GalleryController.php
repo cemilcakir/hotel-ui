@@ -19,7 +19,7 @@ class GalleryController extends Controller
      * @Route("/images")
      */
     public function imagesAction(){
-        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
         $response = $client->request('get','images');
 
         return new JsonResponse($response->getBody()->getContents());

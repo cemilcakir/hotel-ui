@@ -22,7 +22,7 @@ class HotelsController extends Controller
      * @Route("/get-hotels")
      */
     public function getHotelAction(){
-        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
         $response = $client->request('GET','hotels');
 
         return new JsonResponse($response->getBody()->getContents());

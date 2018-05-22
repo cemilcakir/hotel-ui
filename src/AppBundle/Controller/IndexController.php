@@ -23,8 +23,8 @@ class IndexController extends Controller
      * @Route("/hotelsRooms")
      */
     public function hotelsRoomsAction(){
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
 
-        $client = new Client(['base_uri' => 'localhost:8001/']);
         $response = $client->request('GET', 'hotels');
         $hotels = json_decode($response->getBody()->getContents());
 

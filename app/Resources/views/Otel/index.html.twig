@@ -23,7 +23,7 @@
         <div class="row">
             <div class="col-sm-5 col-md-12">
                 <h3>Rezervasyon</h3>
-                <form role="form" class="wowload fadeInRight">
+                <form id="rezervasyonForm" role="form" class="wowload fadeInRight">
                     <div class="form-group">
                         <div class="row">
                             <div class="col-xs-6">
@@ -33,7 +33,7 @@
                             </div>
                             <div class="col-xs-6">
                                 <label for="county">İlçe</label>
-                                <select class="form-control">
+                                <select id="county" class="form-control">
                                 </select>
                             </div>
                         </div>
@@ -43,11 +43,16 @@
                             <div class="col-xs-6">
                                 <label for="star">Yıldız</label>
                                 <select class="form-control">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
                                 </select>
                             </div>
                             <div class="col-xs-6">
                                 <label for="name">Oteller</label>
-                                <select class="form-control">
+                                <select id="hotels" class="form-control">
                                 </select>
                             </div>
                         </div>
@@ -56,12 +61,12 @@
                         <div class="row">
                             <div class="col-xs-6">
                                 <label for="roomType">Odalar</label>
-                                <select class="form-control">
+                                <select id="rooms" class="form-control">
                                 </select>
                             </div>
                             <div class="col-xs-6">
                                 <label for="count">Kişi Sayısı</label>
-                                <input class="form-control" value="0" min="0" type="number">
+                                <input id="capacity" class="form-control" value="1" min="1" type="number">
                             </div>
                         </div>
                     </div>
@@ -69,21 +74,117 @@
                         <div class="row">
                             <div class="col-xs-6">
                                 <label id="lblgr" for="entranceDate">Giriş Tarihi</label>
-                                <input type="date" class="form-control">
+                                <input id="entranceDate" type="date" class="form-control">
                             </div>
                             <div class="col-xs-6">
                                 <label for="leaveDate">Çıkış Tarihi</label>
-                                <input type="date" class="form-control">
+                                <input id="leaveDate" type="date" class="form-control">
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-default"><a href="{{ path('contact') }}">Rezerve Et</a></button>
+                    <button id="btnRez" class="btn-default" data-toggle="modal" data-target="#exampleModal">Rezerve Et</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 <!-- reservation-information -->
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Rezervasyon Bilgileri</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="rezerveEtForm" enctype="multipart/form-data" method="post" action="/rezerve-et">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <input type="hidden" id="userId" />
+                                    <label>Rezervasyon Yapan</label>
+                                    <input type="text" id="userName" readonly />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <input type="hidden" id="hotelId" />
+                                    <label>Otel Adı</label>
+                                    <input type="text"  id="hotelName" readonly />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <input type="hidden" id="roomId" />
+                                    <label>Oda Türü</label>
+                                    <input type="text" id="roomType" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <label>Oda Boyutu</label>
+                                    <input type="number" id="roomSize" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <label>Rezerve Edilen Kişi Sayısı</label>
+                                    <input type="number" id="roomPeopleCount" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <label>Birim Fiyat</label>
+                                    <input type="number" id="roomPrice" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <label>Tutar</label>
+                                    <input type="number" id="bookingPrice" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <label>Otele Giriş Tarihi</label>
+                                    <input type="date" id="entDate" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <label>Otelden Çıkış Tarihi</label>
+                                    <input type="date" id="leaDate" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
+                            <button id="btnBooking" type="submit" class="btn btn-success">Rezerve Et</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -136,6 +237,41 @@
 
     <script language="JavaScript">
 
+        function setCapacity(rooms,roomId) {
+            var capacity = 0;
+            $.each(rooms,function (i,room) {
+                if(room.id == roomId){
+                    capacity = room.capacity;
+                }
+            });
+            return capacity;
+        }
+
+        function getHotels(hotels,rooms,il,ilce){
+            var htmlCounty ="";
+            var htmlHotel ="";
+            var htmlRoom = "";
+            $.each(hotels,function (i,item) {
+                if(item.province === il) {
+                    htmlCounty+="<option value='"+item.county+"'>"+item.county+"</option>";
+                    htmlHotel+="<option value='"+item.id+"'>"+item.name+"</option>";
+                    $.each(rooms,function (i,room) {
+                        if(room.hotel_id === item.id){
+                            htmlRoom+="<option value='"+room.id+"'>"+room.type+"</option>";
+                        }
+                    })
+                }
+                $('#county').html(htmlCounty);
+                $('#hotels').html(htmlHotel);
+                $('#rooms').html(htmlRoom);
+            });
+
+            var roomId = $('#rooms option:selected')[0].value;
+
+
+            document.getElementById('capacity').max = setCapacity(rooms,roomId);
+        }
+
         $( document ).ready(function() {
             $.ajax({
                 url:'hotelsRooms',
@@ -145,6 +281,84 @@
                     var rooms = jQuery.parseJSON(data).rooms;
                     console.log(hotels);
                     console.log(rooms);
+
+                    $.each(hotels,function (i,item) {
+                        $('#province').append($('<option>',{
+                            value: item.province,
+                            text: item.province
+                        }))
+                    });
+                    getHotels(hotels,rooms,$('#province')[0].value,"");
+                    $('#province').change(function () {
+
+                        getHotels(hotels,rooms,$(this)[0].value,"");
+                    });
+                    $('#rooms').change(function () {
+                        document.getElementById('capacity').value=1;
+                        document.getElementById('capacity').max = setCapacity(rooms,document.getElementById('rooms').value);
+                    });
+
+                    $('#btnRez').click(function () {
+                        var roomType = "";
+                        var roomSize = 0;
+                        var birimFiyat = 0;
+                        var toplamFiyat = 0;
+                        $.each(rooms,function (i,room) {
+                            if(room.id == document.getElementById('rooms').value){
+                                roomType=room.type;
+                                roomSize=room.size;
+                                birimFiyat=room.price;
+                            }
+                        });
+
+                        $.ajax({
+                            url:'/get-user',
+                            method:'post',
+                            success:function (data) {
+                                document.getElementById('userId').value = data.userId;
+                                document.getElementById('userName').value = data.userFirstName +' '+data.userLastName;
+                                document.getElementById('hotelName').value = document.getElementById('hotels').textContent;
+                                document.getElementById('hotelId').value =  document.getElementById('hotels').value;
+                                document.getElementById('roomId').value = document.getElementById('rooms').value;
+                                document.getElementById('roomType').value = roomType;
+                                document.getElementById('roomSize').value = roomSize;
+                                document.getElementById('roomPeopleCount').value = document.getElementById('capacity').value;
+                                document.getElementById('roomPrice').value = birimFiyat;
+                                document.getElementById('bookingPrice').value = birimFiyat*document.getElementById('capacity').value;
+                                if(document.getElementById('entranceDate').value != ""){
+                                    document.getElementById('entDate').value = document.getElementById('entranceDate').value;
+                                }
+                                if(document.getElementById('leaveDate').value != ""){
+                                    document.getElementById('leaDate').value = document.getElementById('leaveDate').value;
+                                }
+                            }
+                        });
+                    });
+
+                    $("#rezerveEtForm").submit(function( event ) {
+                        event.preventDefault();
+                        $.ajax({
+                            url: '/rezerve-et',
+                            method: 'post',
+                            dataType: 'json',
+                            async: true,
+                            data:  {
+                                userId: document.getElementById('userId').value,
+                                hotelId: document.getElementById('hotelId').value,
+                                roomId: document.getElementById('roomId').value,
+                                peopleCount: document.getElementById('roomPeopleCount').value,
+                                price: document.getElementById('bookingPrice').value,
+                                entranceDate: document.getElementById('entDate').value,
+                                leaveDate: document.getElementById('leaDate').value
+                            },
+                            success: function (data, status) {
+                                console.log(data);
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                console.log('Ajax request failed.');
+                            }
+                        });
+                    });
                 },
                 error:function (data) {
                     console.log("error");

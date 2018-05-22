@@ -30,7 +30,7 @@ class AdminController extends Controller
             return $response;
         }
         else{
-            $client = new Client(['base_uri'=>'localhost:8001/']);
+            $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
             $response = $client->request('GET','hotels');
             $hotels = json_decode($response->getBody()->getContents());
 
@@ -42,7 +42,7 @@ class AdminController extends Controller
      * @Route("/getHotelId")
      */
     public function getHotelIdAction(Request $request){
-        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
         $response = $client->request('GET','hotels/'.$request->request->get('id'));
         $hotel = json_decode($response->getBody()->getContents());
 
@@ -67,7 +67,7 @@ class AdminController extends Controller
             "mail" => $request->request->get('mail'),
             "detail" => $request->request->get('detail'),
             "phone" => $request->request->get('phone')));
-        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
         $response = $client->request('PATCH','hotels/'.$request->request->get('id'), [
             'body' => $theHotel,
             'headers' => [
@@ -82,38 +82,9 @@ class AdminController extends Controller
      * @Route("/add-hotel-index",name="add-hotel-index")
      */
     public function addHotelIndexAction(){
-
-        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
         $response = $client->request('GET','il');
         $iller = json_decode($response->getBody()->getContents());
-
-        /*$form = $this->createFormBuilder()
-            ->add('province', TextType::class,array('label' => 'İl','attr'   =>  array(
-            'class'   => 'form-control','required'=>true)))
-            ->add('county', TextType::class,array('label' => 'İlçe','attr'   =>  array(
-                'class'   => 'form-control','required'=>true)))
-            ->add('name', TextType::class,array('label' => 'Otel İsmi','attr'   =>  array(
-                'class'   => 'form-control','required'=>true)))
-            ->add('star', NumberType::class,array('label' => 'Yıldız','attr'   =>  array(
-                'class'   => 'form-control','required'=>true)))
-            ->add('link', TextType::class,array('label' => 'Link','attr'   =>  array(
-                'class'   => 'form-control','required'=>true)))
-            ->add('mail', EmailType::class,array('label' => 'Email','attr'   =>  array(
-                'class'   => 'form-control','required'=>true)))
-            ->add('phone', TextType::class,array('label' => 'Telefon','attr'   =>  array(
-                'class'   => 'form-control','required'=>true)))
-            ->add('address', TextType::class,array('label' => 'Açık Adres','attr'   =>  array(
-                'class'   => 'form-control','required'=>true)))
-            ->add('detail', TextareaType::class,array('label' => 'Ayrıntı','attr'   =>  array(
-                'class'   => 'form-control','required'=>true,'style'=>'resize: none;height: 150px;width: 750px')))
-            ->add('save', SubmitType::class, array('label' => 'Oteli Ekle','attr'   =>  array(
-                'class'   => 'btn-success')))
-            ->getForm();
-
-        return $this->render(':Otel:admin-add-hotel.html.twig', array(
-            'form' => $form->createView(),
-        ));*/
-
 
         return $this->render(':Otel:admin-add-hotel.html.twig',array("iller"=>$iller));
     }
@@ -135,8 +106,7 @@ class AdminController extends Controller
             'address'=>$request->request->get('address')
         );
 
-        //dump( json_encode($hotel));die();
-        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
         $response = $client->request('POST','hotels', [
             'body' => json_encode($hotel),
             'headers' => [
@@ -151,7 +121,7 @@ class AdminController extends Controller
      */
     public function deleteHotelAction(Request $request){
 
-        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
         $response = $client->request('delete','hotels/'.$request->request->get('id'));
         return new JsonResponse("silindi");
     }
@@ -160,9 +130,7 @@ class AdminController extends Controller
      * @Route("/admin/ilce")
      */
     public function ilceAction(Request $request) {
-
-
-        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
         $response = $client->request('GET','ilces/'.$request->get('il'));
         $ilceler = json_decode($response->getBody()->getContents());
 
@@ -173,7 +141,7 @@ class AdminController extends Controller
      * @Route("/getHotelPics")
      */
     public function getHotelPicsAction(Request $request){
-        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
         $response = $client->request('GET','/hotels/'.$request->get('id').'/images');
 
         return new JsonResponse($response->getBody()->getContents());
@@ -190,7 +158,7 @@ class AdminController extends Controller
      * @Route("/add-hotel-pic")
      */
     public function addHotelPicAction(Request $request){
-        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
 
         $picInfo = json_encode(array('description'=>$request->request->get('desripction'),'hotel_id'=>$request->request->get('id')));
         $addPic = $client->request('POST','images', [
@@ -222,7 +190,7 @@ class AdminController extends Controller
      * @Route("/delete-hotel-pic")
      */
     public function deleteHotelPicAction(Request $request){
-        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
         $response = $client->request('DELETE','images/'.$request->get('id'));
 
         return new JsonResponse($response->getBody()->getContents());
@@ -234,7 +202,7 @@ class AdminController extends Controller
      * @Route("/getHotelRooms")
      */
     public function getHotelRoomsAction(Request $request){
-        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
         $response = $client->request('GET','hotels/'.$request->request->get('id').'/rooms');
 
         return new JsonResponse($response->getBody()->getContents());
@@ -265,7 +233,7 @@ class AdminController extends Controller
             "floor" => $request->request->get('floor'),
             "detail" =>$request->request->get('detail')
         ));
-        $client = new Client(['base_uri'=>'localhost:8001']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
         $response = $client->request('POST','rooms', [
             'body' => $room,
             'headers' => [
@@ -280,8 +248,7 @@ class AdminController extends Controller
      * @Route("/deleteRoom")
      */
     public function deleteRoomAction(Request $request){
-
-        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
         $response = $client->request('delete','rooms/'.$request->request->get('id'));
         return new JsonResponse("silindi");
     }
@@ -297,7 +264,7 @@ class AdminController extends Controller
      * @Route("/getRoom")
      */
     public function getRoomAction(Request $request){
-        $client = new Client(['base_uri'=>'localhost:8001']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
         $response = $client->request('GET','rooms/'.$request->request->get('id'));
 
         return new JsonResponse($response->getBody()->getContents());
@@ -313,7 +280,7 @@ class AdminController extends Controller
             "detail" => $request->request->get('detail')
         ));
 
-        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
         $response = $client->request('PATCH','rooms/'.$request->request->get('id'), [
             'body' => $room,
             'headers' => [
@@ -334,7 +301,7 @@ class AdminController extends Controller
      * @Route("/add-room-pic")
      */
     public function addRoomPicAction(Request $request){
-        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
 
         $picInfo = json_encode(array('description'=>$request->request->get('desripction'),'hotel_id'=>$request->request->get('hotelId'),'room_id'=>$request->request->get('roomId')));
         $addPic = $client->request('POST','images', [
@@ -366,7 +333,7 @@ class AdminController extends Controller
      * @Route("/get-room-pics")
      */
     public function getRoomPicsAction(Request $request){
-        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
         $response = $client->request('GET','rooms/'.$request->request->get('id').'/images');
         return new JsonResponse($response->getBody()->getContents());
     }
@@ -375,7 +342,7 @@ class AdminController extends Controller
      * @Route("/delete-room-pic")
      */
     public function deleteRoomPicAction(Request $request){
-        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
         $response = $client->request('DELETE','images/'.$request->get('id'));
 
         return new JsonResponse($response->getBody()->getContents());

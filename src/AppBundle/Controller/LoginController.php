@@ -43,7 +43,7 @@ class LoginController extends Controller
      * @Route("/new-user")
      */
     public function newUserAction(Request $request){
-        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
 
         if ($request->request->get("password") != $request->request->get("repassword"))
             return new JsonResponse("Şifreler uyuşmuyor.");
@@ -80,7 +80,7 @@ class LoginController extends Controller
      * @Route("/signin")
      */
     public function signinAction(Request $request){
-        $client = new Client(['base_uri'=>'localhost:8001/']);
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
 
         $response = $client->request("GET","/users/".$request->request->get("mail")."/id")->getBody()->getContents();
         $person = json_decode($response);
