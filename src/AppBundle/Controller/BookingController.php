@@ -56,4 +56,57 @@ class BookingController extends Controller
 
         return new JsonResponse($response->getBody()->getContents());
     }
+
+    /**
+     * @Route("/book-info",name="book-info")
+     */
+    public function bookInfoAction(){
+        return $this->render(':Otel:book-info.html.twig');
+    }
+
+    /**
+     * @Route("/get-book-info")
+     */
+    public function getBookInfoAction(){
+        $userId = $this->get('session')->get('userId');
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
+
+        $response = $client->request('GET','users/'.$userId.'/booking');
+        $userBookings = json_decode($response->getBody()->getContents());
+
+        $responseText = array();
+
+        foreach ($userBookings as $userBooking) {
+            $hotelResponse = json_decode($client->request('GET','hotels/'.$userBooking->hotel_id)->getBody()->getContents());
+            $roomResponse = json_decode($client->request('GET','rooms/'.$userBooking->room_id)->getBody()->getContents());
+
+            $responseText = array_merge_recursive($responseText,array(
+                "bookId"=>$userBooking->id,
+                "hotelName"=>$hotelResponse->name,
+                "roomType"=>$roomResponse->type,
+                "star"=>$hotelResponse->star,
+                "entDate"=>$userBooking->entrance_date,
+                "leaveDate"=>$userBooking->leave_date,
+                "peopleCount"=>$userBooking->people_count,
+                "price"=>$userBooking->price,
+                "phone"=>$hotelResponse->phone,
+                "mail"=>$hotelResponse->mail,
+                "address"=>$hotelResponse->address
+            ));
+        }
+
+        return new JsonResponse(json_encode($responseText));
+    }
+
+    /**
+     * @Route("/cancel-book")
+     */
+    public function cancelBookAction(Request $request){
+        $bookId = $request->request->get('id');
+
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
+
+        $response = $client->request('DELETE','bookings/'.$bookId);
+        return new JsonResponse($response->getStatusCode());
+    }
 }

@@ -1,0 +1,150 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="container">
+        <table id="bookTable" class="table">
+            <thead>
+            <tr>
+                <th style="display: none;" scope="col">id</th>
+                <th scope="col">Otel Adı</th>
+                <th scope="col">Oda Türü</th>
+                <th scope="col">Yıldız</th>
+                <th scope="col">Giriş Tarihi</th>
+                <th scope="col">Çıkış Tarihi</th>
+                <th scope="col">Kişi Sayısı</th>
+                <th scope="col">Tutar</th>
+                <th scope="col">Telefon</th>
+                <th scope="col">Mail</th>
+                <th scope="col">Adres</th>
+                <th scope="col">İşlemler</th>
+            </tr>
+            </thead>
+            <tbody id="test">
+
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script language="JavaScript">
+
+        function fillTable() {
+            $.ajax({
+                url:'/get-book-info',
+                success:function (data) {
+                    var bookInfo = jQuery.parseJSON(data);
+                    var type = jQuery.type(bookInfo.hotelName);
+                    var length = 0;
+                    if(type == "array")
+                        length = bookInfo.hotelName.length;
+                    var html = "";
+
+                    var d = new Date();
+                    var month = d.getMonth()+1;
+                    var day = d.getDate();
+                    var output = d.getFullYear() + '/' +
+                        (month<10 ? '0' : '') + month + '/' +
+                        (day<10 ? '0' : '') + day;
+
+                    if(length > 1){
+                        for (var i = 0; i<length;i++){
+                            console.log(bookInfo);
+                            if(output >= bookInfo.entDate[i].replace(/-/g,'/')){
+                                html +='<tr>' +
+                                    '<td>'+bookInfo.hotelName[i]+'</td>'+
+                                    '<td>'+bookInfo.roomType[i]+'</td>'+
+                                    '<td>'+bookInfo.star[i]+'</td>'+
+                                    '<td>'+bookInfo.entDate[i]+'</td>'+
+                                    '<td>'+bookInfo.leaveDate[i]+'</td>'+
+                                    '<td>'+bookInfo.peopleCount[i]+'</td>'+
+                                    '<td>'+bookInfo.price[i]+'</td>'+
+                                    '<td>'+bookInfo.phone[i]+'</td>'+
+                                    '<td>'+bookInfo.mail[i]+'</td>'+
+                                    '<td>'+bookInfo.address[i]+'</td>'+
+                                '</tr>';
+                            }
+                            else{
+                                html +='<tr>' +
+                                    '<td>'+bookInfo.hotelName[i]+'</td>'+
+                                    '<td>'+bookInfo.roomType[i]+'</td>'+
+                                    '<td>'+bookInfo.star[i]+'</td>'+
+                                    '<td>'+bookInfo.entDate[i]+'</td>'+
+                                    '<td>'+bookInfo.leaveDate[i]+'</td>'+
+                                    '<td>'+bookInfo.peopleCount[i]+'</td>'+
+                                    '<td>'+bookInfo.price[i]+'</td>'+
+                                    '<td>'+bookInfo.phone[i]+'</td>'+
+                                    '<td>'+bookInfo.mail[i]+'</td>'+
+                                    '<td>'+bookInfo.address[i]+'</td>'+
+                                    '<td><button id="'+ bookInfo.bookId[i] +'" onclick="cancelBook('+bookInfo.bookId[i]+')" class="btn-danger">İptal</button></td>'
+                                '</tr>';
+                            }
+
+                        }
+                    }
+                    else{
+                        if(output >= bookInfo.entDate.replace(/-/g,'/')){
+                            html +='<tr>' +
+                                '<td>'+bookInfo.hotelName+'</td>'+
+                                '<td>'+bookInfo.roomType+'</td>'+
+                                '<td>'+bookInfo.star+'</td>'+
+                                '<td>'+bookInfo.entDate+'</td>'+
+                                '<td>'+bookInfo.leaveDate+'</td>'+
+                                '<td>'+bookInfo.peopleCount+'</td>'+
+                                '<td>'+bookInfo.price+'</td>'+
+                                '<td>'+bookInfo.phone+'</td>'+
+                                '<td>'+bookInfo.mail+'</td>'+
+                                '<td>'+bookInfo.address+'</td>'+
+                                '</tr>';
+                        }
+                        else{
+                            html +='<tr>' +
+                                '<td>'+bookInfo.hotelName+'</td>'+
+                                '<td>'+bookInfo.roomType+'</td>'+
+                                '<td>'+bookInfo.star+'</td>'+
+                                '<td>'+bookInfo.entDate+'</td>'+
+                                '<td>'+bookInfo.leaveDate+'</td>'+
+                                '<td>'+bookInfo.peopleCount+'</td>'+
+                                '<td>'+bookInfo.price+'</td>'+
+                                '<td>'+bookInfo.phone+'</td>'+
+                                '<td>'+bookInfo.mail+'</td>'+
+                                '<td>'+bookInfo.address+'</td>'+
+                                '<td><button id="'+ bookInfo.bookId +'" onclick="cancelBook('+bookInfo.bookId+')" class="btn-danger">İptal</button></td>'
+                            '</tr>';
+                        }
+                    }
+                    $('#test').html(html);
+
+                },
+                error:function (data) {
+                    console.log(data);
+                }
+            });
+
+        }
+
+        $(document).ready(function () {
+           fillTable();
+        });
+
+        function cancelBook(id){
+            $.ajax({
+                url:'/cancel-book',
+                method:'post',
+                data:{
+                    id:id
+                },
+                success:function (data) {
+                    fillTable();
+                },
+                error:function (data) {
+                    console.log(data);
+                }
+            });
+        }
+
+    </script>
+{% endblock %}

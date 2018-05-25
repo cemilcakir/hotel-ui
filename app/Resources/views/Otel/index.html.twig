@@ -82,7 +82,7 @@
                             </div>
                         </div>
                     </div>
-                    <button id="btnRez" class="btn-default" data-toggle="modal" data-target="#exampleModal">Rezerve Et</button>
+                    <button id="btnRez" class="btn-default">Rezerve Et</button>
                 </form>
             </div>
         </div>
@@ -90,7 +90,7 @@
 </div>
 <!-- reservation-information -->
 
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -132,7 +132,7 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <label>Oda Boyutu</label>
-                                    <input type="number" id="roomSize" readonly>
+                                    <input type="text" id="roomSize" readonly>
                                 </div>
                             </div>
                         </div>
@@ -140,7 +140,7 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <label>Rezerve Edilen Kişi Sayısı</label>
-                                    <input type="number" id="roomPeopleCount" readonly>
+                                    <input type="text" id="roomPeopleCount" readonly>
                                 </div>
                             </div>
                         </div>
@@ -148,7 +148,7 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <label>Birim Fiyat</label>
-                                    <input type="number" id="roomPrice" readonly>
+                                    <input type="text" id="roomPrice" readonly>
                                 </div>
                             </div>
                         </div>
@@ -156,7 +156,7 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <label>Tutar</label>
-                                    <input type="number" id="bookingPrice" readonly>
+                                    <input type="text" id="bookingPrice" readonly>
                                 </div>
                             </div>
                         </div>
@@ -273,14 +273,19 @@
         }
 
         $( document ).ready(function() {
+            document.getElementById('entranceDate').min = new Date().toISOString().split("T")[0];
+            document.getElementById('leaveDate').min = new Date().toISOString().split("T")[0];
+
+            var ed = document.getElementById('entranceDate');
+            ed.onchange = function(){
+                document.getElementById('leaveDate').min = ed.value;
+            };
             $.ajax({
                 url:'hotelsRooms',
                 methos:'post',
                 success:function (data) {
                     var hotels = jQuery.parseJSON(data).hotels;
                     var rooms = jQuery.parseJSON(data).rooms;
-                    console.log(hotels);
-                    console.log(rooms);
 
                     $.each(hotels,function (i,item) {
                         $('#province').append($('<option>',{
@@ -298,7 +303,8 @@
                         document.getElementById('capacity').max = setCapacity(rooms,document.getElementById('rooms').value);
                     });
 
-                    $('#btnRez').click(function () {
+                    $('#btnRez').click(function (event) {
+                        event.preventDefault();
                         var roomType = "";
                         var roomSize = 0;
                         var birimFiyat = 0;
@@ -310,26 +316,42 @@
                                 birimFiyat=room.price;
                             }
                         });
+                        var start = new Date($('#entranceDate').val());
+                        var end = new Date($('#leaveDate').val());
+                        var diff = new Date(end - start);
+                        var days = diff/1000/60/60/24;
+
+                        toplamFiyat = birimFiyat*document.getElementById('capacity').value*days;
+                        console.log(days);
 
                         $.ajax({
                             url:'/get-user',
                             method:'post',
                             success:function (data) {
-                                document.getElementById('userId').value = data.userId;
-                                document.getElementById('userName').value = data.userFirstName +' '+data.userLastName;
-                                document.getElementById('hotelName').value = document.getElementById('hotels').textContent;
-                                document.getElementById('hotelId').value =  document.getElementById('hotels').value;
-                                document.getElementById('roomId').value = document.getElementById('rooms').value;
-                                document.getElementById('roomType').value = roomType;
-                                document.getElementById('roomSize').value = roomSize;
-                                document.getElementById('roomPeopleCount').value = document.getElementById('capacity').value;
-                                document.getElementById('roomPrice').value = birimFiyat;
-                                document.getElementById('bookingPrice').value = birimFiyat*document.getElementById('capacity').value;
-                                if(document.getElementById('entranceDate').value != ""){
-                                    document.getElementById('entDate').value = document.getElementById('entranceDate').value;
+                                if(data.userId == null || data.userId == ""){
+                                    window.location = "/login";
                                 }
-                                if(document.getElementById('leaveDate').value != ""){
-                                    document.getElementById('leaDate').value = document.getElementById('leaveDate').value;
+                                if ($('#entranceDate').val() == "" || $('#leaveDate').val() == "" || toplamFiyat <= 0){
+                                      alert("Giriş ve çıkış tarihleri geçersiz");
+                                }
+                                else{
+                                    $('#exampleModal').modal();
+                                    document.getElementById('userId').value = data.userId;
+                                    document.getElementById('userName').value = data.userFirstName +' '+data.userLastName;
+                                    document.getElementById('hotelName').value = document.getElementById('hotels').textContent;
+                                    document.getElementById('hotelId').value =  document.getElementById('hotels').value;
+                                    document.getElementById('roomId').value = document.getElementById('rooms').value;
+                                    document.getElementById('roomType').value = roomType;
+                                    document.getElementById('roomSize').value = roomSize;
+                                    document.getElementById('roomPeopleCount').value = document.getElementById('capacity').value;
+                                    document.getElementById('roomPrice').value = birimFiyat;
+                                    document.getElementById('bookingPrice').value = toplamFiyat;
+                                    if(document.getElementById('entranceDate').value != ""){
+                                        document.getElementById('entDate').value = document.getElementById('entranceDate').value;
+                                    }
+                                    if(document.getElementById('leaveDate').value != ""){
+                                        document.getElementById('leaDate').value = document.getElementById('leaveDate').value;
+                                    }
                                 }
                             }
                         });

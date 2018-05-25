@@ -1,6 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+ <style>
+
+        .dropdown-item {
+            display: block;
+            width: 100%;
+            padding: 0.25rem 1.5rem;
+            clear: both;
+            font-weight: 400;
+            color: #212529;
+            text-align: inherit;
+            white-space: nowrap;
+            background-color: transparent;
+            border: 0;
+        }
+
+        .dropdown-item:hover, .dropdown-item:focus {
+            color: #16181b;
+            text-decoration: none;
+            background-color: #f8f9fa;
+        }
+
+        .dropdown-item.active, .dropdown-item:active {
+            color: #fff;
+            text-decoration: none;
+            background-color: #007bff;
+        }
+
+        .dropdown-item.disabled, .dropdown-item:disabled {
+            color: #6c757d;
+            background-color: transparent;
+        }
+        .dropdown-divider {
+            height: 0;
+            margin: 0.5rem 0;
+            overflow: hidden;
+            border-top: 1px solid #e9ecef;
+        }
+
+    </style>
+
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>{% block title %}Hoşgeldiniz!{% endblock %}</title>
@@ -65,12 +106,21 @@
                 <li><a href="{{ path('about-us') }}">Hakkımızda</a></li>
                 <li><a href="{{ path('contact') }}">İletişim</a></li>
                 {%  if(app.session.get('userId') != null or app.session.get('userId') != "") %}
-                    <li><a href="{{ path('signout') }}">
-                            Hoşgeldiniz. {{  app.session.get('userFirstName')}} {{ app.session.get('userLastName') }}
-                        </a></li>
                     {% if (app.session.get('userRole') == "ROLE_ADMIN") %}
-                        <li><a href="{{ path('admin') }}">Admin Paneli</a></li>
+                        <li><a href="{{ path('admin') }}">Admin Paneli  </a></li>
                     {% endif %}
+                    <input type="hidden" id="session" value={{ app.session.get('userId') }} />
+                    <li>
+                            <label style="height: 83.9px;" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Hoşgeldiniz. {{  app.session.get('userFirstName')}} {{ app.session.get('userLastName') }}
+                            </label>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="{{path ('user-info')}}">Hesap Bilgileri</a>
+                                <a class="dropdown-item" href="{{ path('book-info') }}">Rezervasyon Bilgileri</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{{ path('signout') }}">Çıkış</a>
+                            </div>
+                    </li>
                     {% else %}
                 <li><a href="{{ path('login') }}">Giriş Yap</a></li>
                 {% endif %}
@@ -140,12 +190,15 @@
 
 
 <script src="{{asset ('assets/jquery.js') }}"></script>
+<script language = "javascript"
+        src = "https://code.jquery.com/jquery-2.2.4.min.js"></script>
 
 <!-- wow script -->
 <script src="{{asset ('assets/wow/wow.min.js') }}"></script>
 
 <!-- uniform -->
 <script src="{{asset ('assets/uniform/js/jquery.uniform.js') }}"></script>
+
 
 
 <!-- boostrap -->
@@ -164,8 +217,6 @@
 <!-- custom script -->
 <script src="{{asset ('assets/script.js') }}"></script>
 
-<script language = "javascript"
-        src = "https://code.jquery.com/jquery-2.2.4.min.js"></script>
 
 
 {% block javascripts %}{% endblock %}
