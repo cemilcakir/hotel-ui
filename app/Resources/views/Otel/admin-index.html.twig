@@ -3,7 +3,6 @@
 {% block body %}
 
     <div class="container">
-        <a href="{{ path('admin') }}">Admin Index</a>
         <table id="hotelTable" class="table">
             <thead>
             <tr>
@@ -19,37 +18,35 @@
                 <th scope="col">Adres</th>
                 <th scope="col">Detay</th>
                 <th scope="col">İşlemler</th>
-                <th scope="col"><a href="{{ path('add-hotel-index') }}"><button class="button btn-success small">Yeni Otel Ekleyin</button></a></th>
+                <th scope="col"><a href="{{ path('add-hotel-index') }}"><button class="button btn-success fa fa-plus"></button></a></th>
 
             </tr>
             </thead>
-            <tbody>
-            {% set sum = 0 %}
-            {% for hotel in hotels %}
-                {% set sum = sum + 1 %}
-                <tr>
-                    <td style="display:none;" >{{ hotel.id }}</td>
-                    <th scope="row">{{ sum}}</th>
-                    <td >{{ hotel.name }}</td>
-                    <td>{{ hotel.link }}</td>
-                    <td>{{ hotel.star }}</td>
-                    <td>{{ hotel.phone }}</td>
-                    <td>{{ hotel.mail }}</td>
-                    <td>{{ hotel.province }}</td>
-                    <td>{{ hotel.county }}</td>
-                    <td>{{ hotel.address }}</td>
-                    <td>{{ hotel.detail }}</td>
-                    <td>
-                        <a href="#"><button  id="otelEditBtn" onclick="otelEdit({{ hotel.id }})"  class="button btn-primary small">Düzenle</button></a>
+            <tbody id ="hotelRows">
+            <!--
+        <tr>
+            <td style="display:none;" ></td>
+            <th scope="row"></th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+                <a href="#"><button  id="otelEditBtn" onclick="otelEdit()"  class="button btn-primary small">Düzenle</button></a>
 
-                        <a href="#"><button onclick="roomIndex({{ hotel.id }})" class="button btn-primary small">Odaları Gör</button></a>
+                <a href="#"><button onclick="roomIndex()" class="button btn-primary small">Odaları Gör</button></a>
 
-                        <a  href="#"><button onclick="hotelPics({{ hotel.id }})" class="button btn-primary small">Resimleri Düzenle</button></a>
+                <a  href="#"><button onclick="hotelPics()" class="button btn-primary small">Resimleri Düzenle</button></a>
 
-                        <button id="otelSilBtn" onclick= "otelSil({{ hotel.id }})" class="button btn-danger small">Sil</button>
-                    </td>
-                </tr>
-            {% endfor %}
+                <button id="otelSilBtn" onclick= "otelSil()" class="button btn-danger small">Sil</button>
+            </td>
+        </tr>
+         -->
             </tbody>
         </table>
     </div>
@@ -58,27 +55,68 @@
 
 {% block javascripts %}
 
-<script language="JavaScript">
+    <script language="JavaScript">
 
-    function otelSil(id) {
-
-        $.ajax({
-            url: '/deleteHotel',
-            method: 'post',
-            dataType: 'json',
-            async: true,
-            data:  {
-                id: id
-            },
-            success: function (response) {
-            },
-            error: function (xhr, textStatus, errorThrown) {
-                console.log('Ajax request failed.');
-            }
+        $(document).ready(function () {
+            $.ajax({
+               url:'/get-hotels',
+               method:'post',
+               success:function (data) {
+                   var hotels = jQuery.parseJSON(data);
+                   var hotelsCount = hotels.length;
+                   console.log(hotels);
+                   var html = "";
+                   for (var i = 0; i<hotelsCount;i++){
+                       html +='<tr>' +
+                           '<td>'+(i+1)+'</td>'+
+                           '<td>'+hotels[i].name+'</td>'+
+                           '<td>'+hotels[i].link+'</td>'+
+                           '<td>'+hotels[i].star+'</td>'+
+                           '<td>'+hotels[i].phone+'</td>'+
+                           '<td>'+hotels[i].mail+'</td>'+
+                           '<td>'+hotels[i].province+'</td>'+
+                           '<td>'+hotels[i].county+'</td>'+
+                           '<td>'+hotels[i].address+'</td>'+
+                           '<td>'+hotels[i].detail.substr(0,15)+'...</td>'+
+                           '<td>' +
+                           ' <a href="#"><button  id="otelEditBtn" onclick="otelEdit('+hotels[i].id+')"  class="button btn-primary small fa fa-edit" style="height: 30px;"></button></a>'+
+                           '<a href="#"><button onclick="roomIndex('+hotels[i].id+')" class="button btn-primary small  fa fa-eye" style="height: 30px;"></button></a>'+
+                            ' <a  href="#"><button onclick="hotelPics('+hotels[i].id+')" class="button btn-primary small  fa fa-image" style="height: 30px;"></button></a>'+
+                           ' <button id="otelSilBtn" onclick= "otelSil('+hotels[i].id+')" class="button btn-danger small  fa fa-remove" style="height: 30px;"></button></a>'+
+                           '</td>'+
+                           '</tr>';
+                   }
+                   $('#hotelRows').html(html);
+               },
+               error:function (data) {
+                   console.log(data);
+               }
+            });
         });
-    }
 
-</script>
+    </script>
+
+    <script language="JavaScript">
+
+        function otelSil(id) {
+
+            $.ajax({
+                url: '/deleteHotel',
+                method: 'post',
+                dataType: 'json',
+                async: true,
+                data:  {
+                    id: id
+                },
+                success: function (response) {
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log('Ajax request failed.');
+                }
+            });
+        }
+
+    </script>
 
     <script language="JavaScript">
 
@@ -124,7 +162,7 @@
 
     }
 
-</script>
+    </script>
 
     <script language="JavaScript">
         function hotelPics(id){

@@ -29,6 +29,14 @@
                                 <input class="form-control" type="number" min=0 id="floor" name="floor" value=""> </input>
                             </div>
                             <div class="form-group">
+                                <label >Oda Boyutu</label>
+                                <input class="form-control" type="number" min=0 id="size" name="size" value=""> </input>
+                            </div>
+                            <div class="form-group">
+                                <label >Oda Kapasitesi</label>
+                                <input class="form-control" type="number" min=0 id="capacity" name="capacity" value=""> </input>
+                            </div>
+                            <div class="form-group">
                                 <label >Detay</label>
                                 <textarea style="resize: none;height: 150px;width: 750px" id="detail" name="detail" value=""></textarea>
                             </div>
@@ -68,7 +76,9 @@
                     type: document.getElementById('type').value,
                     price: document.getElementById('price').value,
                     floor: document.getElementById('floor').value,
-                    detail: document.getElementById('detail').value
+                    detail: document.getElementById('detail').value,
+                    size: document.getElementById('size').value,
+                    capacity: document.getElementById('capacity').value
                 },
                 success: function (data, status) {
                     document.getElementById("RoomAddForm").reset();

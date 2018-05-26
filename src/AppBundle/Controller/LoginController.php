@@ -62,10 +62,11 @@ class LoginController extends Controller
             ]]);
         $personId=json_decode($response->getBody()->getContents())->id;
 
-        $user = json_encode(array("username"=>$request->request->get("mail"),"password"=>$request->request->get("password"),"retyped_password"=>$request->request->get("repassword"),"roles"=>"ROLE_ADMIN","person_id"=>$personId));
+        $user = json_encode(array("username"=>$request->request->get("mail"),"password"=>$request->request->get("password"),"retyped_password"=>$request->request->get("repassword"),"roles"=>["ROLE_ADMIN"],"person_id"=>$personId));
 
         $response = $client->request("POST","users",['body'=>$user,"headers"=>['Content-Type'=>'application/json']]);
         $userId =json_decode($response->getBody()->getContents())->id;
+
 
         $response = $client->request("PATCH","humans/".$personId,["body"=>json_encode(array("user_id"=>$userId)),
             'headers' => [

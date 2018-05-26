@@ -31,12 +31,13 @@ class UserInfoController extends Controller
 
         $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
 
-        $response = $client->request("PATCH","users/".$userId,[
-            "headers"=>[
-                'Accept'        => 'application/json',
-                'Authorization' => 'Bearer ' . $token
-            ],
-            "body"=>$body]);
+        $response = $client->request('PATCH','users/'.$userId, [
+            'body' => $body,
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer '.$token
+            ]
+        ]);
 
         return new JsonResponse($response->getBody()->getContents());
     }

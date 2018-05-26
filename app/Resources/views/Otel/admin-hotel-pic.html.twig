@@ -5,7 +5,9 @@
 
     <br>
     <div class="container">
-        <button class="btn-success" data-toggle="modal" data-target="#exampleModal">Resim Ekle</button>
+        <a href="{{ path('admin') }}">Admin Index</a>
+        <br><br>
+        <button class="btn-success fa fa-plus" data-toggle="modal" data-target="#exampleModal"></button>
         <br><br>
         <div id="resimler" class="row gallery">
         <!--
@@ -92,7 +94,7 @@
                     $('#resimler').html(html);
                 },
                 error: function (xhr, textStatus, errorThrown) {
-                    console.log('Ajax request failed.');
+                    consoleFoods.log('Ajax request failed.');
                 }
             });
         }
@@ -107,7 +109,7 @@
                 success: function (response) {
                     var pics= jQuery.parseJSON(response);
                     for(var i = 0; i < pics.length; i++){
-                        var html = '<div></div><div class="col-sm-4 fadeInUp " id="div'+pics[i].id+'"><button id="'+pics[i].id+'" onclick="deletePic('+pics[i].id+')" class="btn-danger">Kaldır</button><br><br><a  href="http://localhost:8001/'+pics[i].url+'" title="Foods" class="gallery-image" data-gallery><img src="http://localhost:8001/'+pics[i].url+'"></a></div>';
+                        var html = '<div></div><div class="col-sm-4 fadeInUp " id="div'+pics[i].id+'"><button id="'+pics[i].id+'" onclick="deletePic('+pics[i].id+')" class="btn-danger fa fa-remove"></button><br><br><a  href="http://localhost:8001/'+pics[i].url+'" title="'+pics[i].description+'" class="gallery-image" data-gallery><img src="http://localhost:8001/'+pics[i].url+'"></a></div>';
                         //$('#resimler').html(html);
                         $(html).appendTo('#resimler');
                     }

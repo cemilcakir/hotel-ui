@@ -32,10 +32,19 @@ class AdminController extends Controller
         else{
             $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
             $response = $client->request('GET','hotels');
-            $hotels = json_decode($response->getBody()->getContents());
 
-            return $this->render(':Otel:admin-index.html.twig',array('hotels' => $hotels));
+            return $this->render(':Otel:admin-index.html.twig');
         }
+    }
+
+    /**
+     * @Route("/get-hotels")
+     */
+    public function getHotelsAction(){
+        $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
+        $response = $client->request('GET','hotels');
+
+        return new JsonResponse($response->getBody()->getContents());
     }
 
     /**
@@ -170,7 +179,7 @@ class AdminController extends Controller
 
         $createdPic = json_decode($addPic->getBody()->getContents());
 
-        $dizin = '/var/www/hotel-ui/web/images/';
+        $dizin = '/var/www/hotel-ui-git/web/images/';
         $yuklenecek_dosya = $dizin . basename($_FILES['image']['name']);
 
         if (move_uploaded_file($_FILES['image']['tmp_name'], $yuklenecek_dosya)){
@@ -231,7 +240,9 @@ class AdminController extends Controller
             "type" => $request->request->get('type'),
             "price" => $request->request->get('price'),
             "floor" => $request->request->get('floor'),
-            "detail" =>$request->request->get('detail')
+            "detail" =>$request->request->get('detail'),
+            "size" => $request->request->get('size'),
+            "capacity"=>$request->request->get('capacity')
         ));
         $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
         $response = $client->request('POST','rooms', [
@@ -303,7 +314,12 @@ class AdminController extends Controller
     public function addRoomPicAction(Request $request){
         $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
 
-        $picInfo = json_encode(array('description'=>$request->request->get('desripction'),'hotel_id'=>$request->request->get('hotelId'),'room_id'=>$request->request->get('roomId')));
+        $picInfo = json_encode(array(
+            'description'=>$request->request->get('desripction'),
+            'hotel_id'=>$request->request->get('hotelId'),
+            'room_id'=>$request->request->get('roomId'))
+        );
+
         $addPic = $client->request('POST','images', [
             'body' => $picInfo,
             'headers' => [
@@ -313,7 +329,7 @@ class AdminController extends Controller
 
         $createdPic = json_decode($addPic->getBody()->getContents());
 
-        $dizin = '/var/www/hotel-ui/web/images/';
+        $dizin = '/var/www/hotel-ui-git/web/images/';
         $yuklenecek_dosya = $dizin . basename($_FILES['image']['name']);
 
         if (move_uploaded_file($_FILES['image']['tmp_name'], $yuklenecek_dosya)){
