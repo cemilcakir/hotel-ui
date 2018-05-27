@@ -97,11 +97,10 @@
                         id: rooms[i].id
                     },
                     success:function (data2) {
-                        console.log(data2);return;
                         if(jQuery.parseJSON(data2).images[0] != undefined){
                             for(var k =0;k<i;k++){
                                 var html="";
-                               /* roomPic= "http://"+jQuery.parseJSON(data2).img_link+jQuery.parseJSON(data2).images[0].url;
+                                roomPic= "http://"+jQuery.parseJSON(data2).img_link+jQuery.parseJSON(data2).images[0].url;
                                 html='<div class="col-sm-6 fadeInUp">'+
                                     ' <div class="rooms"><img src="'+roomPic+'" class="img-responsive">'+
                                     '<div  class="info">'+
@@ -109,7 +108,7 @@
                                     '<p> '+rooms[k].detail.substr(0,25)+'...</p>'+
                                     '<a href="/room-details?room='+rooms[k].id+'" class="btn btn-default">Ayrıntıya Git</a>'
                                 ;
-                                $(html).appendTo('#rooms');*/
+                                $(html).appendTo('#rooms');
                             }
                         }
                     },
