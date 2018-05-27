@@ -7,22 +7,7 @@
     <div class="container">
 
         <h2>Oteller</h2>
-
-        <!-- form -->
-
         <div id="hotels" class="row">
-            <!-- <div class="col-sm-6 wowload fadeInUp">
-                <div class="rooms"><img src="images/photos/8.jpg" class="img-responsive">
-                    <div  class="info">
-                         Otellerin bilgileri gelecek
-                        <h3>Luxirious Suites</h3>
-                        <p> Missed lovers way one vanity wishes nay but. Use shy seemed within twenty wished old few regret passed. Absolute one hastened mrs any sensible</p>
-                        <a href="{{ path('hotel-details') }}" class="btn btn-default">Ayrıntıya Git</a>
-                         Otellerin bilgileri gelecek
-                    </div>
-                </div>
-            </div>
-    -->
         </div>
     </div>
 {% endblock %}
@@ -30,40 +15,11 @@
 {% block javascripts %}
 
     <script language="JavaScript">
-        var hotels="";
        $.ajax({
             url:'/get-hotels',
             method:'post',
             success:function (data) {
                 putPics(jQuery.parseJSON(data));
-                /*var html="";
-                hotels= jQuery.parseJSON(data);
-                for(var i=0;i<hotels.length;i++){
-                    var hotelPic="";
-                    $.ajax({
-                        url:'/getHotelPics',
-                        method:'post',
-                        data:{
-                            id: hotels[i].id
-                        },
-                        success:function (data2) {
-                                if(jQuery.parseJSON(data2)[0] != undefined){
-                                    hotelPic= "http://localhost:8001"+jQuery.parseJSON(data2)[0].url;
-                                    html+='<div class="col-sm-6 fadeInUp">'+
-                                        ' <div class="rooms"><img src="'+hotelPic+'" class="img-responsive">'+
-                                        '<div  class="info">'+
-                                         '<h3>'+hotels[i-1].name+'</h3>'+
-                                         '<p> '+hotels[i-1].detail+'</p>'+
-                                         '<a href="/hotel-details?hotel='+hotels[i-1].id+'" class="btn btn-default">Ayrıntıya Git</a>'
-                                    ;
-                                    $('#hotels').html(html);
-                                }
-                        },
-                        error:function (data) {
-                            console.log(data);
-                        }
-                    });
-                }*/
             },
             error:function (data) {
                 console.log(data);
@@ -80,10 +36,11 @@
                        id: hotels[i].id
                    },
                    success:function (data2) {
-                       if(jQuery.parseJSON(data2)[0] != undefined){
+                       //console.log(jQuery.parseJSON(data2).images[0].url);return;
+                       if(jQuery.parseJSON(data2).images[0] != undefined){
                            for(var k =0;k<i;k++){
                                var html="";
-                               hotelPic= "http://localhost:8001"+jQuery.parseJSON(data2)[0].url;
+                               hotelPic= "http://"+jQuery.parseJSON(data2).img_link+jQuery.parseJSON(data2).images[0].url;
                                html='<div class="col-sm-6 fadeInUp">'+
                                    ' <div class="rooms"><img src="'+hotelPic+'" class="img-responsive">'+
                                    '<div  class="info">'+

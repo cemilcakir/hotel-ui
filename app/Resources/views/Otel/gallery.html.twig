@@ -8,7 +8,6 @@
 
         <h1 class="title">Galeri</h1>
         <div id="resimler" class="row gallery">
-            <div class="col-sm-4 wowload fadeInUp"><a href="images/photos/1.jpg" title="Foods" class="gallery-image" data-gallery><img src="images/photos/1.jpg" class="img-responsive"></a></div>
         </div>
     </div>
 
@@ -24,11 +23,11 @@
             dataType: 'json',
             async: true,
             success: function (response) {
-                console.log(response);
-                var pics= jQuery.parseJSON(response);
+                var pics= jQuery.parseJSON(response).images;
+                var img_link = jQuery.parseJSON(response).img_link;
                 var html="";
                 for(var i = 0; i < pics.length; i++){
-                    html += '<div></div><div class="col-sm-4 fadeInUp " id="div'+pics[i].id+'"><a  href="http://localhost:8001/'+pics[i].url+'" title="'+pics[i].description+'" class="gallery-image" data-gallery><img src="http://localhost:8001/'+pics[i].url+'"></a></div>';
+                    html += '<div></div><div class="col-sm-4 fadeInUp " id="div'+pics[i].id+'"><a  href="http://localhost:8001/'+pics[i].url+'" title="'+pics[i].description+'" class="gallery-image" data-gallery><img src="http://'+img_link+pics[i].url+'"></a></div>';
                     //$(html).appendTo('#resimler');
                 }
                 $('#resimler').html(html);

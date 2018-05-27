@@ -58,10 +58,12 @@
                 id:qsParm.room
             },
             success:function (data) {
-                var resimler = jQuery.parseJSON(data);
-                var html ='<div class="item active"><img src="http://localhost:8001'+resimler[0].url+'" class="img-responsive" alt="slide"></div>';
+                var resimler = jQuery.parseJSON(data).images;
+                var img_link = jQuery.parseJSON(data).img_link;
+
+                var html ='<div class="item active"><img src="http://'+img_link+resimler[0].url+'" class="img-responsive" alt="slide"></div>';
                 for(var i=1;i<resimler.length;i++){
-                    html+='<div class="item  height-full"><img src="http://localhost:8001'+resimler[i].url+'"  class="img-responsive" alt="slide"></div>';
+                    html+='<div class="item  height-full"><img src="http://'+img_link+resimler[i].url+'"  class="img-responsive" alt="slide"></div>';
 
                 }
                 $(html).appendTo('#roomPics');

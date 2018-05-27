@@ -151,9 +151,14 @@ class AdminController extends Controller
      */
     public function getHotelPicsAction(Request $request){
         $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
+        $img_link = $this->container->getParameter('app_bundle.img_link');
+
         $response = $client->request('GET','/hotels/'.$request->get('id').'/images');
 
-        return new JsonResponse($response->getBody()->getContents());
+        $response = json_decode($response->getBody()->getContents());
+        $res = json_encode(array("images"=>$response,"img_link"=>$img_link));
+
+        return new JsonResponse($res);
     }
 
     /**
@@ -350,8 +355,14 @@ class AdminController extends Controller
      */
     public function getRoomPicsAction(Request $request){
         $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
+        $img_link = $this->container->getParameter('app_bundle.img_link');
+
         $response = $client->request('GET','rooms/'.$request->request->get('id').'/images');
-        return new JsonResponse($response->getBody()->getContents());
+
+        $response = json_decode($response->getBody()->getContents());
+        $res = json_encode(array("images"=>$response,"img_link"=>$img_link));
+
+        return new JsonResponse($res);
     }
 
     /**

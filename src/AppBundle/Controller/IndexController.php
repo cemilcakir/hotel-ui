@@ -24,6 +24,7 @@ class IndexController extends Controller
      */
     public function hotelsRoomsAction(){
         $client = new Client(['base_uri'=>$this->container->getParameter('app_bundle.api_link')]);
+        $img_link = $this->container->getParameter('app_bundle.img_link');
 
         $response = $client->request('GET', 'hotels');
         $hotels = json_decode($response->getBody()->getContents());
@@ -32,7 +33,7 @@ class IndexController extends Controller
         $rooms = json_decode($response->getBody()->getContents());
 
         $res = new JsonResponse();
-        $res->setContent(json_encode(array("hotels"=>$hotels,"rooms"=>$rooms)));
+        $res->setContent(json_encode(array("hotels"=>$hotels,"rooms"=>$rooms,"img_link"=>$img_link)));
 
         return new JsonResponse($res->getContent());
     }

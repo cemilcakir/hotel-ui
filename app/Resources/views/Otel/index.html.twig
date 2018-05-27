@@ -203,8 +203,8 @@
                         Otellerin resimleri gelecek -->
                     </div>
                     <!-- Controls -->
-                    <a class="left carousel-control" href="#OtelCarousel" role="button" data-slide="prev"><i class="fa fa-angle-left"></i></a>
-                    <a class="right carousel-control" href="#OtelCarousel" role="button" data-slide="next"><i class="fa fa-angle-right"></i></a>
+                    <a class="left carousel-control" href="#hotelCarousel" role="button" data-slide="prev"><i class="fa fa-angle-left"></i></a>
+                    <a class="right carousel-control" href="#hotelCarousel" role="button" data-slide="next"><i class="fa fa-angle-right"></i></a>
                 </div>
                 <!-- OtelCarousel-->
                 <div class="caption">Oteller<a href="{{ path ('hotels') }}" class="pull-right"><i class="fa fa-edit"></i></a></div>
@@ -221,8 +221,8 @@
                          Odaların resimleri gelecek -->
                     </div>
                     <!-- Controls -->
-                    <a class="left carousel-control" href="#OdaCarousel" role="button" data-slide="prev"><i class="fa fa-angle-left"></i></a>
-                    <a class="right carousel-control" href="#OdaCarousel" role="button" data-slide="next"><i class="fa fa-angle-right"></i></a>
+                    <a class="left carousel-control" href="#roomCarousel" role="button" data-slide="prev"><i class="fa fa-angle-left"></i></a>
+                    <a class="right carousel-control" href="#roomCarousel" role="button" data-slide="next"><i class="fa fa-angle-right"></i></a>
                 </div>
                 <!-- OdaCarousel -->
                 <div class="caption">Odalar</div>
@@ -398,16 +398,18 @@
             url:'/images',
             method:'post',
             success:function (data) {
-                var resimler = jQuery.parseJSON(data);
-                var roomc='<div class="item active"><img src="http://localhost:8001'+resimler[0].url+'" class="img-responsive" alt="slide"></div>';
-                var html ='<div class="item active"><img src="http://localhost:8001'+resimler[0].url+'" class="img-responsive" alt="slide"></div>';
+                var resimler = jQuery.parseJSON(data).images;
+                var img_link = jQuery.parseJSON(data).img_link;
+
+                var roomc='<div class="item active"><img src="http://'+img_link+resimler[0].url+'" class="img-responsive" alt="slide"></div>';
+                var html ='<div class="item active"><img src="http://'+img_link+resimler[0].url+'" class="img-responsive" alt="slide"></div>';
                 for(var i=1;i<resimler.length;i++){
                     if(resimler[i].room_id != undefined){
-                        html+='<div class="item  height-full"><img src="http://localhost:8001'+resimler[i].url+'"  class="img-responsive" alt="slide"></div>';
-                        roomc+='<div class="item  height-full"><img src="http://localhost:8001'+resimler[i].url+'"  class="img-responsive" alt="slide"></div>';
+                        html+='<div class="item  height-full"><img src="http://'+img_link+resimler[i].url+'"  class="img-responsive" alt="slide"></div>';
+                        roomc+='<div class="item  height-full"><img src="http://'+img_link+resimler[i].url+'"  class="img-responsive" alt="slide"></div>';
                     }
                     else{
-                        html+='<div class="item  height-full"><img src="http://localhost:8001'+resimler[i].url+'"  class="img-responsive" alt="slide"></div>';
+                        html+='<div class="item  height-full"><img src="http://'+img_link+resimler[i].url+'"  class="img-responsive" alt="slide"></div>';
                     }
                 }
                 $(html).appendTo('#hotelCarousel');
