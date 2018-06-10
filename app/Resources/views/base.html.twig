@@ -111,8 +111,9 @@
                     {% endif %}
                     <input type="hidden" id="session" value={{ app.session.get('userId') }} />
                     <li>
-                            <label style="height: 83.9px;" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Hoşgeldiniz. {{  app.session.get('userFirstName')}} {{ app.session.get('userLastName') }}
+                        <br>
+                            <label style="height: 83.9px;text-align: center" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                 Hoşgeldiniz <br> {{  app.session.get('userFirstName')}} {{ app.session.get('userLastName') }}
                             </label>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="{{path ('user-info')}}">Hesap Bilgileri</a>
