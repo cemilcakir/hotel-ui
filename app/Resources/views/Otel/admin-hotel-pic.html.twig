@@ -85,40 +85,44 @@
                     id: hotelId
                 },
                 success: function (response) {
-                    var pics= jQuery.parseJSON(response);
-                    var html="";
+                    var pics= jQuery.parseJSON(response).images;
+                    var img_link = jQuery.parseJSON(response).img_link;
+
+                    var html ="";
                     for(var i = 0; i < pics.length; i++){
-                        html += '<div></div><div class="col-sm-4 fadeInUp " id="div'+pics[i].id+'"><button id="'+pics[i].id+'" onclick="deletePic('+pics[i].id+')" class="btn-danger">Kaldır</button><br><br><a  href="http://localhost:8001/'+pics[i].url+'" title="Foods" class="gallery-image" data-gallery><img src="http://localhost:8001/'+pics[i].url+'"></a></div>';
+                        html += '<div></div><div class="col-sm-4 fadeInUp " id="div'+pics[i].id+'"><button id="'+pics[i].id+'" onclick="deletePic('+pics[i].id+')" class="btn-danger">Kaldır</button><br><br><a  href="http://'+img_link+pics[i].url+'" title="Foods" class="gallery-image" data-gallery><img src="http://'+img_link+pics[i].url+'"></a></div>';
                         //$(html).appendTo('#resimler');
                     }
                     $('#resimler').html(html);
+                    //$('#pics').attr('href',response.url);
                 },
                 error: function (xhr, textStatus, errorThrown) {
                     consoleFoods.log('Ajax request failed.');
                 }
             });
         }
-            $.ajax({
-                url: '/getHotelPics' ,
-                method: 'post',
-                dataType: 'json',
-                async: true,
-                data:  {
-                    id: qsParm.hotel
-                },
-                success: function (response) {
-                    var pics= jQuery.parseJSON(response);
-                    for(var i = 0; i < pics.length; i++){
-                        var html = '<div></div><div class="col-sm-4 fadeInUp " id="div'+pics[i].id+'"><button id="'+pics[i].id+'" onclick="deletePic('+pics[i].id+')" class="btn-danger fa fa-remove"></button><br><br><a  href="http://localhost:8001/'+pics[i].url+'" title="'+pics[i].description+'" class="gallery-image" data-gallery><img src="http://localhost:8001/'+pics[i].url+'"></a></div>';
-                        //$('#resimler').html(html);
-                        $(html).appendTo('#resimler');
-                    }
-                    //$('#pics').attr('href',response.url);
-                },
-                error: function (xhr, textStatus, errorThrown) {
-                    console.log('Ajax request failed.');
-                }
-            });
+        getHotelPics(qsParm.hotel);
+            // $.ajax({
+            //     url: '/getHotelPics' ,
+            //     method: 'post',
+            //     dataType: 'json',
+            //     async: true,
+            //     data:  {
+            //         id: qsParm.hotel
+            //     },
+            //     success: function (response) {
+            //         var pics= jQuery.parseJSON(response);
+            //         for(var i = 0; i < pics.length; i++){
+            //             var html = '<div></div><div class="col-sm-4 fadeInUp " id="div'+pics[i].id+'"><button id="'+pics[i].id+'" onclick="deletePic('+pics[i].id+')" class="btn-danger fa fa-remove"></button><br><br><a  href="http://localhost:8001/'+pics[i].url+'" title="'+pics[i].description+'" class="gallery-image" data-gallery><img src="http://localhost:8001/'+pics[i].url+'"></a></div>';
+            //             //$('#resimler').html(html);
+            //             $(html).appendTo('#resimler');
+            //         }
+            //         //$('#pics').attr('href',response.url);
+            //     },
+            //     error: function (xhr, textStatus, errorThrown) {
+            //         console.log('Ajax request failed.');
+            //     }
+            // });
 
         $('#resimEkleForm').submit(function (event) {
             event.preventDefault();
